@@ -57,12 +57,4 @@ public class King extends Piece {
 
         return ret;
     }
-
-    @Override
-    public boolean moveTo(Coord c) {
-        // WARNING: for now this function doesn't check if the move is legal 
-        this.coord = c;
-        return true;
-    }
-    
 }

@@ -11,23 +11,27 @@ public abstract class Piece {
     protected Coord coord; // the position
     protected Board board;
     abstract public TreeSet<Coord> getLegalMoves();
-    abstract public boolean moveTo(Coord c);
-
+    
     // public Piece() throws IllegalAccessError {
-    //     throw new IllegalAccessError("don't call this function directly");
-    // }
-
+        //     throw new IllegalAccessError("don't call this function directly");
+        // }
+        
     public Piece(Board b, boolean isBlack, Coord initCoord) {
         this.board = b;
         this.isBlackVal = isBlack;
         this.coord = initCoord;
     }
-
+    
     public boolean isBlack() {
         return isBlackVal;
     }
-
+    
     public Coord getCoord() {
         return coord;
     };
+    
+    public boolean moveTo(Coord c) {
+        this.coord = c;
+        return true;
+    }
 }

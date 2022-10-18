@@ -1,3 +1,4 @@
+package Test;
 import Board.Board;
 import Board.King;
 import mUtil.Coord;
