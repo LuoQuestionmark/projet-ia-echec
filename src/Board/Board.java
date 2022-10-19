@@ -75,4 +75,35 @@ public class Board {
                 throw new IllegalArgumentException("promotion cannot be done");           
         }
     } 
+
+    public void newGame() {
+        // start a new game
+        this.whitePieces.clear();
+        this.blackPieces.clear();
+
+        this.addPiece(new Rock(this, false, new Coord(0, 0)));
+        this.addPiece(new Rock(this, false, new Coord(7, 0)));
+        this.addPiece(new Rock(this, true, new Coord(0, 7)));
+        this.addPiece(new Rock(this, true, new Coord(7, 7)));
+        
+        this.addPiece(new Knight(this, false, new Coord(1, 0)));
+        this.addPiece(new Knight(this, false, new Coord(6, 0)));
+        this.addPiece(new Knight(this, true, new Coord(1, 7)));
+        this.addPiece(new Knight(this, true, new Coord(6, 7)));
+
+        this.addPiece(new Bishop(this, false, new Coord(2, 0)));
+        this.addPiece(new Bishop(this, false, new Coord(5, 0)));
+        this.addPiece(new Bishop(this, true, new Coord(2, 7)));
+        this.addPiece(new Bishop(this, true, new Coord(5, 7)));
+
+        this.addPiece(new Queen(this, false, new Coord(3, 0)));
+        this.addPiece(new Queen(this, true, new Coord(3, 0)));
+        this.addPiece(new Rock(this, false, new Coord(4, 7)));
+        this.addPiece(new Rock(this, true, new Coord(4, 7)));
+
+        for (int i = 0; i < 8; i++) {
+            this.addPiece(new Pawn(this, false, new Coord(i, 1)));
+            this.addPiece(new Pawn(this, true, new Coord(6, i)));
+        }
+    }
 }
