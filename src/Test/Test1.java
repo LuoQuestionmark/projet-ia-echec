@@ -15,5 +15,10 @@ public class Test1 {
 
         Queen q = new Queen(new Board(), false, new Coord(3, 3));
         System.out.println(q.getLegalMoves());
+
+        Pawn p = new Pawn(new Board(), false, new Coord(3, 1));
+        System.out.println(p.getLegalMoves());
+        p.moveTo(new Coord(3, 2));
+        System.out.println(p.getLegalMoves());
     }
 }

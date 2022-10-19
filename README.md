@@ -31,3 +31,17 @@ I assume that I need at least two `class` to do this part :
   - (some sub-class of pieces, of course)
 
 The board should be able to tell what are the legal moves. Maybe an *evaluation function* as well.
+
+#### Convention & Notation
+
+The white player will occupy the "bottom" of the board, and the index will be counted from left to right, from "bottom" to "top".
+
+| 7    |      |      |      |      |      |      |      |
+| ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- |
+| 6    |      |      |      |      |      |      |      |
+| 5    |      |      |      |      |      |      |      |
+| 4    |      |      |      |      |      |      |      |
+| 0, 3 |      |      |      |      |      |      |      |
+| 0, 2 |      |      |      |      |      |      |      |
+| 0, 1 |      |      |      |      |      |      |      |
+| 0, 0 | 1, 0 | 2, 0 | 3, 0 | 4, 0 | 5, 0 | 6, 0 | 7, 0 |
