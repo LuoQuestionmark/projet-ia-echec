@@ -53,6 +53,21 @@ public class King extends Piece {
             }
         }
 
+        ArrayList<Piece> friends;
+        if (this.isBlack()) {
+            friends = board.getBlackPieces();
+        }
+        else {
+            friends = board.getWhitePieces();
+        }
+        for (Piece p: friends) {
+            for (Coord c: ret) {
+                if (c.equals(p.coord)) {
+                    illegaCoords.add(c);
+                }
+            }
+        }
+
         ret.removeAll(illegaCoords);
 
         return ret;
