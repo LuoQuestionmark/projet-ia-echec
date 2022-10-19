@@ -2,26 +2,82 @@ package Board;
 
 import java.util.ArrayList;
 import java.util.TreeSet;
-import java.lang.Math;
 
 import mUtil.Coord;
 
-public class Rock extends Piece{
+public class Queen extends Piece {
 
-    public Rock(Board b, boolean isBlack, Coord initCoord) {
+    public Queen(Board b, boolean isBlack, Coord initCoord) {
         super(b, isBlack, initCoord);
     }
 
     @Override
     public TreeSet<Coord> getLegalMoves() {
+        // well this is easy, just put the code for Rock and for Bishop then we are done
+        TreeSet<Coord> ret = new TreeSet<>();
+
+        int nwLimit, swLimit, neLimit, seLimit;
+
+        neLimit = Math.min(7 - this.coord.x, 7 - this.coord.y);
+        seLimit = Math.min(7 - this.coord.x, this.coord.y);
+        nwLimit = Math.min(this.coord.x, 7 - this.coord.y);
+        swLimit = Math.min(this.coord.x, this.coord.y);
+
+        ArrayList<Piece> friends, enemies;
+        if (this.isBlack()) {
+            friends = this.board.getBlackPieces();
+            enemies = this.board.getWhitePieces();
+        }
+        else {
+            friends = this.board.getWhitePieces();
+            enemies = this.board.getBlackPieces();
+        }
+
+        TreeSet<Coord> friendsCoords = new TreeSet<>();
+        TreeSet<Coord> enemiesCooods = new TreeSet<>();
+
+        for (Piece p: friends) {
+            friendsCoords.add(p.coord);
+        }
+        for (Piece p: enemies) {
+            enemiesCooods.add(p.coord);
+        }
+
+        for (int i = 1; i <= neLimit; i++) {
+            Coord tmp = new Coord(this.coord.x + i, this.coord.y + i);
+            if (friendsCoords.contains(tmp)) break;
+            ret.add(tmp);
+            if (enemiesCooods.contains(tmp)) break;
+        }
+
+        for (int i = 1; i <= seLimit; i++) {
+            Coord tmp = new Coord(this.coord.x + i, this.coord.y - i);
+            if (friendsCoords.contains(tmp)) break;
+            ret.add(tmp);
+            if (enemiesCooods.contains(tmp)) break;
+        }
+
+        for (int i = 1; i <= nwLimit; i++) {
+            Coord tmp = new Coord(this.coord.x - i, this.coord.y + i);
+            if (friendsCoords.contains(tmp)) break;
+            ret.add(tmp);
+            if (enemiesCooods.contains(tmp)) break;
+        }
+
+        for (int i = 1; i <= swLimit; i++) {
+            Coord tmp = new Coord(this.coord.x - i, this.coord.y - i);
+            if (friendsCoords.contains(tmp)) break;
+            ret.add(tmp);
+            if (enemiesCooods.contains(tmp)) break;
+        }
+
         int xLowerLimit, xUpperLimit, yLowerLimit, yUpperLimit;
         xLowerLimit = Math.min(0, this.coord.x);
         xUpperLimit = Math.max(7, this.coord.x);
 
         yLowerLimit = Math.min(0, this.coord.y);
         yUpperLimit = Math.max(7, this.coord.y);
-        
-        ArrayList<Piece> friends, enemies;
+
         if (this.isBlack()) {
             friends = this.board.getBlackPieces();
             enemies = this.board.getWhitePieces();
@@ -73,8 +129,6 @@ public class Rock extends Piece{
             }
         }
 
-        TreeSet<Coord> ret = new TreeSet<>();
-
         for (int col = xLowerLimit; col <= xUpperLimit; col++) {
             ret.add(new Coord(col, this.coord.y));
         }
@@ -83,7 +137,7 @@ public class Rock extends Piece{
         }
 
         ret.remove(this.coord);
-        
+
         return ret;
     }
     

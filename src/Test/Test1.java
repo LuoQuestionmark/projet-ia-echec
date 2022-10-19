@@ -12,5 +12,8 @@ public class Test1 {
 
         Bishop b = new Bishop(new Board(), false, new Coord(3, 2));
         System.out.println(b.getLegalMoves());
+
+        Queen q = new Queen(new Board(), false, new Coord(3, 3));
+        System.out.println(q.getLegalMoves());
     }
 }
