@@ -3,71 +3,72 @@
 package Board;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import mUtil.Coord;
 
 public class Board {
-    private ArrayList<Piece> whitePieces = new ArrayList<>();
-    private ArrayList<Piece> blackPieces = new ArrayList<>();
+    private HashMap<PieceType, ArrayList<Piece>> availablePieces = new HashMap<>();
+    private HashMap<Coord, Piece> board;
+    // private HashMap<Coord, Piece>ArrayList<Piece> whitePieces = new ArrayList<>();
+    // private ArrayList<Piece> blackPieces = new ArrayList<>();
 
-    public boolean addPiece(Piece p) throws IllegalArgumentException {
-        // throw illegalArgumentException is opertaion cannot be done
-        for (Piece wp: whitePieces) {
-            if (wp.coord.equals(p.coord)) {
-                throw new IllegalArgumentException();
-            }
+    public Board() {
+        for (PieceType pt: PieceType.values()) {
+            availablePieces.put(pt, new ArrayList<Piece>());
         }
-        for (Piece bp: blackPieces) {
-            if (bp.coord.equals(p.coord)) {
-                throw new IllegalArgumentException();
-            }
+
+        boolean bVals[] = {true, false}; // black, white
+        for (boolean isBlack: bVals) {
+            // TODO: for others
+            availablePieces.get(PieceType.King).add(new King(this, isBlack));
         }
-        if (p.isBlack()) {
-            blackPieces.add(p);
-        }
-        else {
-            whitePieces.add(p);
-        }
-        return true;
     }
 
-    public ArrayList<Piece> getWhitePieces() {
+    public void addPiece(Coord c, Piece p) throws IllegalArgumentException {
+        // throw illegalArgumentException is opertaion cannot be done
+        if ((board.containsKey(c))) {
+            throw new IllegalArgumentException("the Coord " + c + " is not valid");
+        }
+        board.put(c, p);
+    }
+
+    public HashMap<Coord, Piece> getWhitePieces() {
+        HashMap<Coord, Piece> whitePieces = new HashMap<>();
+        for (HashMap.Entry<Coord, Piece> e: board.entrySet()) {
+            if (e.getValue().isBlack()) continue;
+            whitePieces.put(e.getKey(), e.getValue());
+        }
         return whitePieces;
     }
 
-    public ArrayList<Piece> getBlackPieces() {
+    public HashMap<Coord, Piece> getBlackPieces() {
+        HashMap<Coord, Piece> blackPieces = new HashMap<>();
+        for (HashMap.Entry<Coord, Piece> e: board.entrySet()) {
+            if (e.getValue().isBlack()) {
+                blackPieces.put(e.getKey(), e.getValue());
+            }
+        }
         return blackPieces;
     }
 
-    public void promotion(Pawn p) {
-        // this one without argument, so it will demande directely in the stdout ?
-        // TODO
-    }
-
-    public void promotion(Pawn p, PieceType pt) throws IllegalArgumentException {
+    public void promotion(Coord c, PieceType pt) throws IllegalArgumentException {
         if (pt == PieceType.Pawn || pt == PieceType.King) {
             throw new IllegalArgumentException("promotion cannot be done");
         }
-        Coord c = p.coord;
-        Boolean pIsBlack = p.isBlack();
-        if (p.isBlack()) {
-            this.blackPieces.remove(p);
+        if (this.board.get(c) == null || !(this.board.get(c) instanceof Pawn)) {
+            throw new IllegalArgumentException("no pawn found");
         }
-        else {
-            this.whitePieces.remove(p);
-        }
+        boolean isBlack = this.board.get(c).isBlack();
+
         switch (pt) {
             case Bishop:
-                Bishop b = new Bishop(this, pIsBlack, c);
-                this.addPiece(b);
-                break;
             case Queen:
-                Queen q = new Queen(this, pIsBlack, c);
-                this.addPiece(q);
-                break;
             case Rock:
-                Rock r = new Rock(this, pIsBlack, c);
-                this.addPiece(r);
+            case Knight:
+                ArrayList<Piece> pList = availablePieces.get(pt);
+                Piece p = pList.get(isBlack?0:1);
+                this.board.put(c, p);
                 break;
             case King:
             case Pawn:
@@ -78,32 +79,8 @@ public class Board {
 
     public void newGame() {
         // start a new game
-        this.whitePieces.clear();
-        this.blackPieces.clear();
+        this.board.clear();
 
-        this.addPiece(new Rock(this, false, new Coord(0, 0)));
-        this.addPiece(new Rock(this, false, new Coord(7, 0)));
-        this.addPiece(new Rock(this, true, new Coord(0, 7)));
-        this.addPiece(new Rock(this, true, new Coord(7, 7)));
-        
-        this.addPiece(new Knight(this, false, new Coord(1, 0)));
-        this.addPiece(new Knight(this, false, new Coord(6, 0)));
-        this.addPiece(new Knight(this, true, new Coord(1, 7)));
-        this.addPiece(new Knight(this, true, new Coord(6, 7)));
-
-        this.addPiece(new Bishop(this, false, new Coord(2, 0)));
-        this.addPiece(new Bishop(this, false, new Coord(5, 0)));
-        this.addPiece(new Bishop(this, true, new Coord(2, 7)));
-        this.addPiece(new Bishop(this, true, new Coord(5, 7)));
-
-        this.addPiece(new Queen(this, false, new Coord(3, 0)));
-        this.addPiece(new Queen(this, true, new Coord(3, 0)));
-        this.addPiece(new Rock(this, false, new Coord(4, 7)));
-        this.addPiece(new Rock(this, true, new Coord(4, 7)));
-
-        for (int i = 0; i < 8; i++) {
-            this.addPiece(new Pawn(this, false, new Coord(i, 1)));
-            this.addPiece(new Pawn(this, true, new Coord(6, i)));
-        }
+        // TODO
     }
 }

@@ -1,6 +1,6 @@
 package Board;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.TreeSet;
 import java.lang.Math;
 
@@ -8,22 +8,22 @@ import mUtil.Coord;
 
 public class Bishop extends Piece{
 
-    public Bishop(Board b, boolean isBlack, Coord initCoord) {
-        super(b, isBlack, initCoord);
+    public Bishop(Board b, boolean isBlack) {
+        super(b, isBlack);
     }
 
     @Override
-    public TreeSet<Coord> getLegalMoves() {
+    public TreeSet<Coord> getLegalMoves(Coord currentCoord) {
         TreeSet<Coord> ret = new TreeSet<>();
 
         int nwLimit, swLimit, neLimit, seLimit;
 
-        neLimit = Math.min(7 - this.coord.x, 7 - this.coord.y);
-        seLimit = Math.min(7 - this.coord.x, this.coord.y);
-        nwLimit = Math.min(this.coord.x, 7 - this.coord.y);
-        swLimit = Math.min(this.coord.x, this.coord.y);
+        neLimit = Math.min(7 - currentCoord.x, 7 - currentCoord.y);
+        seLimit = Math.min(7 - currentCoord.x, currentCoord.y);
+        nwLimit = Math.min(currentCoord.x, 7 - currentCoord.y);
+        swLimit = Math.min(currentCoord.x, currentCoord.y);
 
-        ArrayList<Piece> friends, enemies;
+        HashMap<Coord, Piece> friends, enemies;
         if (this.isBlack()) {
             friends = this.board.getBlackPieces();
             enemies = this.board.getWhitePieces();
@@ -33,42 +33,32 @@ public class Bishop extends Piece{
             enemies = this.board.getBlackPieces();
         }
 
-        TreeSet<Coord> friendsCoords = new TreeSet<>();
-        TreeSet<Coord> enemiesCooods = new TreeSet<>();
-
-        for (Piece p: friends) {
-            friendsCoords.add(p.coord);
-        }
-        for (Piece p: enemies) {
-            enemiesCooods.add(p.coord);
-        }
-
         for (int i = 1; i <= neLimit; i++) {
-            Coord tmp = new Coord(this.coord.x + i, this.coord.y + i);
-            if (friendsCoords.contains(tmp)) break;
+            Coord tmp = new Coord(currentCoord.x + i, currentCoord.y + i);
+            if (friends.keySet().contains(tmp)) break;
             ret.add(tmp);
-            if (enemiesCooods.contains(tmp)) break;
+            if (enemies.keySet().contains(tmp)) break;
         }
 
         for (int i = 1; i <= seLimit; i++) {
-            Coord tmp = new Coord(this.coord.x + i, this.coord.y - i);
-            if (friendsCoords.contains(tmp)) break;
+            Coord tmp = new Coord(currentCoord.x + i, currentCoord.y - i);
+            if (friends.keySet().contains(tmp)) break;
             ret.add(tmp);
-            if (enemiesCooods.contains(tmp)) break;
+            if (enemies.keySet().contains(tmp)) break;
         }
 
         for (int i = 1; i <= nwLimit; i++) {
-            Coord tmp = new Coord(this.coord.x - i, this.coord.y + i);
-            if (friendsCoords.contains(tmp)) break;
+            Coord tmp = new Coord(currentCoord.x - i, currentCoord.y + i);
+            if (friends.keySet().contains(tmp)) break;
             ret.add(tmp);
-            if (enemiesCooods.contains(tmp)) break;
+            if (enemies.keySet().contains(tmp)) break;
         }
 
         for (int i = 1; i <= swLimit; i++) {
-            Coord tmp = new Coord(this.coord.x - i, this.coord.y - i);
-            if (friendsCoords.contains(tmp)) break;
+            Coord tmp = new Coord(currentCoord.x - i, currentCoord.y - i);
+            if (friends.keySet().contains(tmp)) break;
             ret.add(tmp);
-            if (enemiesCooods.contains(tmp)) break;
+            if (enemies.keySet().contains(tmp)) break;
         }
 
         return ret;

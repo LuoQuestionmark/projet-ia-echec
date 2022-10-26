@@ -5,5 +5,6 @@ public enum PieceType {
     King,
     Pawn,
     Queen,
-    Rock
+    Rock,
+    Knight
 }

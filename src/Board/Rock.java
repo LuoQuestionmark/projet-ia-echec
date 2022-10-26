@@ -1,6 +1,6 @@
 package Board;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.TreeSet;
 import java.lang.Math;
 
@@ -8,20 +8,20 @@ import mUtil.Coord;
 
 public class Rock extends Piece{
 
-    public Rock(Board b, boolean isBlack, Coord initCoord) {
-        super(b, isBlack, initCoord);
+    public Rock(Board b, boolean isBlack) {
+        super(b, isBlack);
     }
 
     @Override
-    public TreeSet<Coord> getLegalMoves() {
+    public TreeSet<Coord> getLegalMoves(Coord currentCoord) {
         int xLowerLimit, xUpperLimit, yLowerLimit, yUpperLimit;
-        xLowerLimit = Math.min(0, this.coord.x);
-        xUpperLimit = Math.max(7, this.coord.x);
+        xLowerLimit = Math.min(0, currentCoord.x);
+        xUpperLimit = Math.max(7, currentCoord.x);
 
-        yLowerLimit = Math.min(0, this.coord.y);
-        yUpperLimit = Math.max(7, this.coord.y);
+        yLowerLimit = Math.min(0, currentCoord.y);
+        yUpperLimit = Math.max(7, currentCoord.y);
         
-        ArrayList<Piece> friends, enemies;
+        HashMap<Coord, Piece> friends, enemies;
         if (this.isBlack()) {
             friends = this.board.getBlackPieces();
             enemies = this.board.getWhitePieces();
@@ -31,44 +31,44 @@ public class Rock extends Piece{
             enemies = this.board.getBlackPieces();
         }
 
-        for (Piece p: friends) {
-            if (p.coord.y == this.coord.y) {
+        for (Coord c: friends.keySet()) {
+            if (c.y == currentCoord.y) {
                 // same row
-                if (p.coord.x < this.coord.x) {
-                    xLowerLimit = Math.max(xLowerLimit, p.coord.x + 1); // cannot eat teammate
+                if (c.x < currentCoord.x) {
+                    xLowerLimit = Math.max(xLowerLimit, c.x + 1); // cannot eat teammate
                 }
                 else {
-                    xUpperLimit = Math.min(xUpperLimit, p.coord.x - 1); // cannot eat teammate
+                    xUpperLimit = Math.min(xUpperLimit, c.x - 1); // cannot eat teammate
                 }
             }
-            else if (p.coord.x == this.coord.x) {
+            else if (c.x == currentCoord.x) {
                 // same col
-                if (p.coord.y < this.coord.y) {
-                    yLowerLimit = Math.max(yLowerLimit, p.coord.y + 1); // cannot eat teammate
+                if (c.y < currentCoord.y) {
+                    yLowerLimit = Math.max(yLowerLimit, c.y + 1); // cannot eat teammate
                 }
                 else {
-                    yUpperLimit = Math.min(yUpperLimit, p.coord.y - 1); // cannot eat teammate
+                    yUpperLimit = Math.min(yUpperLimit, c.y - 1); // cannot eat teammate
                 }
             }
         }
 
-        for (Piece p: enemies) {
-            if (p.coord.y == this.coord.y) {
+        for (Coord c: enemies.keySet()) {
+            if (c.y == currentCoord.y) {
                 // same row
-                if (p.coord.x < this.coord.x) {
-                    xLowerLimit = Math.max(xLowerLimit, p.coord.x); // can eat enemy
+                if (c.x < currentCoord.x) {
+                    xLowerLimit = Math.max(xLowerLimit, c.x); // can eat enemy
                 }
                 else {
-                    xUpperLimit = Math.min(xUpperLimit, p.coord.x); // can eat enemy
+                    xUpperLimit = Math.min(xUpperLimit, c.x); // can eat enemy
                 }
             }
-            else if (p.coord.x == this.coord.x) {
+            else if (c.x == currentCoord.x) {
                 // same col
-                if (p.coord.y < this.coord.y) {
-                    yLowerLimit = Math.max(yLowerLimit, p.coord.y); // can eat enemy
+                if (c.y < currentCoord.y) {
+                    yLowerLimit = Math.max(yLowerLimit, c.y); // can eat enemy
                 }
                 else {
-                    yUpperLimit = Math.min(yUpperLimit, p.coord.y); // can eat enemy
+                    yUpperLimit = Math.min(yUpperLimit, c.y); // can eat enemy
                 }
             }
         }
@@ -76,13 +76,13 @@ public class Rock extends Piece{
         TreeSet<Coord> ret = new TreeSet<>();
 
         for (int col = xLowerLimit; col <= xUpperLimit; col++) {
-            ret.add(new Coord(col, this.coord.y));
+            ret.add(new Coord(col, currentCoord.y));
         }
         for (int row = yLowerLimit; row <= yUpperLimit; row++) {
-            ret.add(new Coord(this.coord.x, row));
+            ret.add(new Coord(currentCoord.x, row));
         }
 
-        ret.remove(this.coord);
+        ret.remove(currentCoord);
         
         return ret;
     }

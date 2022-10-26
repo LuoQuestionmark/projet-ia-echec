@@ -1,18 +1,19 @@
 package Board;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.TreeSet;
 
 import mUtil.Coord;
 
 public class Knight extends Piece {
 
-    public Knight(Board b, boolean isBlack, Coord initCoord) {
-        super(b, isBlack, initCoord);
+    public Knight(Board b, boolean isBlack) {
+        super(b, isBlack);
     }
 
     @Override
-    public TreeSet<Coord> getLegalMoves() {
+    public TreeSet<Coord> getLegalMoves(Coord currentCoord) {
         ArrayList<Integer> p1 = new ArrayList<>();
         p1.add(1); p1.add(-1);
         ArrayList<Integer> p2 = new ArrayList<>(p1);
@@ -26,16 +27,16 @@ public class Knight extends Piece {
                     int x = i * j * (k>0?2:1);
                     int y = j * (k<0?2:1);
                     // System.out.printf("%d, %d\n", x, y);
-                    if ((x + coord.x >= 0 && x + coord.x < 8)
-                      &&(y + coord.y >= 0 && y + coord.y < 8))
+                    if ((x + currentCoord.x >= 0 && x + currentCoord.x < 8)
+                      &&(y + currentCoord.y >= 0 && y + currentCoord.y < 8))
                     {
-                        ret.add(new Coord(x + coord.x,  + y + coord.y));
+                        ret.add(new Coord(x + currentCoord.x,  + y + currentCoord.y));
                     }
                 }
             }
         }
 
-        ArrayList<Piece> friends;
+        HashMap<Coord, Piece> friends;
         if (this.isBlack()) {
             friends = this.board.getBlackPieces();
         }
@@ -45,11 +46,10 @@ public class Knight extends Piece {
 
         TreeSet<Coord> illegaCoords = new TreeSet<Coord>();
 
-        for (Piece p: friends) {
-            for (Coord c: ret) {
-                if (c.equals(p.coord)) {
-                    illegaCoords.add(c);
-                }
+        // cannot eat teammates
+        for (Coord c: friends.keySet()) {
+            if (ret.contains(c)) {
+                illegaCoords.add(c);
             }
         }
 

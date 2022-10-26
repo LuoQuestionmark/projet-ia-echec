@@ -1,18 +1,19 @@
 package Board;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.TreeSet;
 
 import mUtil.Coord;
 
 public class King extends Piece {
 
-    public King(Board b, boolean isBlack, Coord initCoord) {
-        super(b, isBlack, initCoord);
+    public King(Board b, boolean isBlack) {
+        super(b, isBlack);
     }
 
     @Override
-    public TreeSet<Coord> getLegalMoves() {
+    public TreeSet<Coord> getLegalMoves(Coord currentCoord) {
         // this one is tricky, because there is a rule binding with
         // the move of the opponent; king cannot suicide
         TreeSet<Coord> ret = new TreeSet<Coord>();
@@ -21,23 +22,23 @@ public class King extends Piece {
 
         // step 1: add
 
-        xList.add(this.coord.x);
-        yList.add(this.coord.y);
+        xList.add(currentCoord.x);
+        yList.add(currentCoord.y);
 
-        if (this.coord.x > 0) xList.add(this.coord.x - 1);
-        if (this.coord.y > 0) yList.add(this.coord.y - 1);
-        if (this.coord.x < 7) xList.add(this.coord.x + 1);
-        if (this.coord.y < 7) yList.add(this.coord.y + 1);
+        if (currentCoord.x > 0) xList.add(currentCoord.x - 1);
+        if (currentCoord.y > 0) yList.add(currentCoord.y - 1);
+        if (currentCoord.x < 7) xList.add(currentCoord.x + 1);
+        if (currentCoord.y < 7) yList.add(currentCoord.y + 1);
 
         for (int x: xList) {
             for (int y: yList) {
                 ret.add(new Coord(x, y));
             }
         }
-        ret.remove(this.coord);
+        ret.remove(currentCoord);
 
         // step 2: remove
-        ArrayList<Piece> enemies;
+        HashMap<Coord,Piece> enemies;
         TreeSet<Coord> illegaCoords = new TreeSet<Coord>();
         if (this.isBlack()) {
             enemies = board.getWhitePieces();
@@ -45,31 +46,30 @@ public class King extends Piece {
         else {
             enemies = board.getBlackPieces();
         }
-        for (Piece p: enemies) {
-            for (Coord m: p.getLegalMoves()) {
+
+        for (HashMap.Entry<Coord,Piece> e: enemies.entrySet()) {
+            for (Coord m: e.getValue().getLegalMoves(e.getKey())) {
                 if (ret.contains(m)) {
                     illegaCoords.add(m);
                 }
             }
         }
 
-        ArrayList<Piece> friends;
+        HashMap<Coord,Piece> friends;
         if (this.isBlack()) {
             friends = board.getBlackPieces();
         }
         else {
             friends = board.getWhitePieces();
         }
-        for (Piece p: friends) {
-            for (Coord c: ret) {
-                if (c.equals(p.coord)) {
-                    illegaCoords.add(c);
-                }
+        for (Coord c: friends.keySet()) {
+            if (ret.contains(c)) {
+                illegaCoords.add(c);
             }
+
         }
 
         ret.removeAll(illegaCoords);
-
         return ret;
     }
 }
