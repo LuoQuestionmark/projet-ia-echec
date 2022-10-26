@@ -72,4 +72,9 @@ public class King extends Piece {
         ret.removeAll(illegaCoords);
         return ret;
     }
+
+    @Override
+    public String getShortName() {
+        return "K";
+    }
 }

@@ -9,7 +9,7 @@ import mUtil.Coord;
 
 public class Board {
     private HashMap<PieceType, ArrayList<Piece>> availablePieces = new HashMap<>();
-    private HashMap<Coord, Piece> board;
+    private HashMap<Coord, Piece> board = new HashMap<>();
     // private HashMap<Coord, Piece>ArrayList<Piece> whitePieces = new ArrayList<>();
     // private ArrayList<Piece> blackPieces = new ArrayList<>();
 
@@ -20,8 +20,12 @@ public class Board {
 
         boolean bVals[] = {true, false}; // black, white
         for (boolean isBlack: bVals) {
-            // TODO: for others
+            availablePieces.get(PieceType.Bishop).add(new Bishop(this, isBlack));
+            availablePieces.get(PieceType.Knight).add(new Knight(this, isBlack));
+            availablePieces.get(PieceType.Pawn).add(new Pawn(this, isBlack));
+            availablePieces.get(PieceType.Rock).add(new Rock(this, isBlack));
             availablePieces.get(PieceType.King).add(new King(this, isBlack));
+            availablePieces.get(PieceType.Queen).add(new Queen(this, isBlack));
         }
     }
 
@@ -81,6 +85,53 @@ public class Board {
         // start a new game
         this.board.clear();
 
-        // TODO
+        this.addPiece(new Coord(0, 0), availablePieces.get(PieceType.Rock).get(1));
+        this.addPiece(new Coord(7, 0), availablePieces.get(PieceType.Rock).get(1));
+        this.addPiece(new Coord(0, 7), availablePieces.get(PieceType.Rock).get(0));
+        this.addPiece(new Coord(7, 7), availablePieces.get(PieceType.Rock).get(0));
+
+        this.addPiece(new Coord(1, 0), availablePieces.get(PieceType.Knight).get(1));
+        this.addPiece(new Coord(6, 0), availablePieces.get(PieceType.Knight).get(1));
+        this.addPiece(new Coord(1, 7), availablePieces.get(PieceType.Knight).get(0));
+        this.addPiece(new Coord(6, 7), availablePieces.get(PieceType.Knight).get(0));
+
+        this.addPiece(new Coord(2, 0), availablePieces.get(PieceType.Bishop).get(1));
+        this.addPiece(new Coord(5, 0), availablePieces.get(PieceType.Bishop).get(1));
+        this.addPiece(new Coord(2, 7), availablePieces.get(PieceType.Bishop).get(0));
+        this.addPiece(new Coord(5, 7), availablePieces.get(PieceType.Bishop).get(0));
+
+        this.addPiece(new Coord(3, 0), availablePieces.get(PieceType.Queen).get(1));
+        this.addPiece(new Coord(3, 7), availablePieces.get(PieceType.Queen).get(0));
+
+        this.addPiece(new Coord(4, 0), availablePieces.get(PieceType.King).get(1));
+        this.addPiece(new Coord(4, 7), availablePieces.get(PieceType.King).get(0));
+
+        for (int i = 0; i < 8; i++) {
+            this.addPiece(new Coord(i, 1), availablePieces.get(PieceType.Pawn).get(1));
+            this.addPiece(new Coord(i, 6), availablePieces.get(PieceType.Pawn).get(0));
+        }
+
+    }
+
+    @Override
+    public String toString() {
+        String ret = "";
+
+        for (int y = 7; y >= 0; y--) {
+            ret += "|";
+            for (int x = 0; x < 8; x++) {
+                String pieceNote = "  ";
+                for (Coord c: board.keySet()) {
+                    if (c.equals(new Coord(x, y))) {
+                        pieceNote = board.get(c).getShortName() + (board.get(c).isBlack()?"B":"W");
+                        break;
+                    }
+                }
+                ret += pieceNote + "|";
+            }
+            ret += "\n";
+        }
+
+        return ret;
     }
 }

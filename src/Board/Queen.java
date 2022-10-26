@@ -130,5 +130,10 @@ public class Queen extends Piece {
 
         return ret;
     }
+
+    @Override
+    public String getShortName() {
+        return "Q";
+    }
     
 }

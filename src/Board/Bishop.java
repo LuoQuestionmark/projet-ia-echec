@@ -63,5 +63,10 @@ public class Bishop extends Piece{
 
         return ret;
     }
+
+    @Override
+    public String getShortName() {
+        return "B";
+    }
     
 }

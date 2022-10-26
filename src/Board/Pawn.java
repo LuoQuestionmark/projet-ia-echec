@@ -8,7 +8,7 @@ import mUtil.Coord;
 public class Pawn extends Piece {
     private boolean isMoved;
 
-    public Pawn(Board b, boolean isBlack, Coord initCoord) {
+    public Pawn(Board b, boolean isBlack) {
         super(b, isBlack);
         this.isMoved = false;
     }
@@ -75,5 +75,10 @@ public class Pawn extends Piece {
         if (currentCoord.y == 7 && !(this.isBlack())) return true;
         if (currentCoord.y == 0 &&   this.isBlack() ) return true;
         return false;
+    }
+
+    @Override
+    public String getShortName() {
+        return "P";
     }
 }

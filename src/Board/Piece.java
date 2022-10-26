@@ -11,6 +11,8 @@ public abstract class Piece {
     // protected Coord coord; // the position
     protected Board board;
     abstract public TreeSet<Coord> getLegalMoves(Coord currentCoord);
+
+    abstract public String getShortName();
     
     // public Piece() throws IllegalAccessError {
         //     throw new IllegalAccessError("don't call this function directly");

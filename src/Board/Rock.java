@@ -86,5 +86,10 @@ public class Rock extends Piece{
         
         return ret;
     }
+
+    @Override
+    public String getShortName() {
+        return "R";
+    }
     
 }
