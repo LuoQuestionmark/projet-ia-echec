@@ -5,13 +5,13 @@ package Board;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import mUtil.Coord;
+import mUtil.*;
 
 public class Board {
     private HashMap<PieceType, ArrayList<Piece>> availablePieces = new HashMap<>();
     private HashMap<Coord, Piece> board = new HashMap<>();
-    // private HashMap<Coord, Piece>ArrayList<Piece> whitePieces = new ArrayList<>();
-    // private ArrayList<Piece> blackPieces = new ArrayList<>();
+
+    private boolean isBlackMove = false;
 
     public Board() {
         for (PieceType pt: PieceType.values()) {
@@ -84,6 +84,7 @@ public class Board {
     public void newGame() {
         // start a new game
         this.board.clear();
+        this.isBlackMove = false;
 
         this.addPiece(new Coord(0, 0), availablePieces.get(PieceType.Rock).get(1));
         this.addPiece(new Coord(7, 0), availablePieces.get(PieceType.Rock).get(1));
@@ -112,6 +113,28 @@ public class Board {
         }
 
     }
+
+    public ArrayList<Move> getAvaiableMoves() {
+        ArrayList<Move> ret = new ArrayList<>();
+        HashMap<Coord, Piece> pieces;
+
+        if (isBlackMove) {
+            pieces = getBlackPieces();
+        }
+        else {
+            pieces = getWhitePieces();
+        }
+
+        for (HashMap.Entry<Coord, Piece> e: pieces.entrySet()) {
+            Coord src = e.getKey();
+            for (Coord dst: e.getValue().getLegalMoves(src)) {
+                ret.add(new Move(src, dst));
+            }
+        }
+
+        return ret;
+    }
+
 
     @Override
     public String toString() {
