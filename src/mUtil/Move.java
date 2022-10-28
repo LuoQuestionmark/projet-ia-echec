@@ -29,4 +29,9 @@ public class Move implements Comparable<Move> {
 
         return ret;
     }
+
+    @Override
+    public String toString() {
+        return coordSrc + "->" + coordDst;
+    }
 }
