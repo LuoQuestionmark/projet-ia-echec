@@ -128,12 +128,25 @@ public class Board {
         for (HashMap.Entry<Coord, Piece> e: pieces.entrySet()) {
             Coord src = e.getKey();
             for (Coord dst: e.getValue().getLegalMoves(src)) {
-                ret.add(new Move(src, dst));
+                // special case: promotion detection
+                if (e.getValue().getShortName().equals("P")) {
+                    if ((  e.getValue().isBlack()  && dst.y == 0)
+                    ||  (!(e.getValue().isBlack()) && dst.y == 7)) {
+                        for (PieceType pt: PieceType.values()) {
+                            if (pt == PieceType.King || pt == PieceType.Pawn) continue;
+                            ret.add(new MovePromotion(src, dst, pt));
+                        }
+                    }
+                }
+                else {
+                    ret.add(new Move(src, dst));
+                }
             }
         }
 
         return ret;
     }
+
 
 
     @Override

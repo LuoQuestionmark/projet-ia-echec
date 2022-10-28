@@ -28,10 +28,34 @@ public class Pawn extends Piece {
         }
 
         // move forward
-        Coord oneStepForward = new Coord(currentCoord.x, currentCoord.y + (this.isBlack()?-1:1));
-        Coord twoStepForward = new Coord(currentCoord.x, currentCoord.y + (this.isBlack()?-2:2));
-        boolean canOneStepForward = true;
-        boolean canTwoStepForward = true;
+        boolean canOneStepForward = false;
+        boolean canTwoStepForward = false;
+        Coord oneStepForward = null;
+        Coord twoStepForward = null;
+
+        if (this.isBlack()) {
+            if (currentCoord.y > 1) {
+                canTwoStepForward = true;
+            }
+            if (currentCoord.y > 0) {
+                canOneStepForward = true;
+            }
+        }
+        else {
+            if (currentCoord.y < 6) {
+                canTwoStepForward = true;
+            }
+            if (currentCoord.y < 7) {
+                canOneStepForward = true;
+            }
+        }
+
+        if (canOneStepForward) {
+            oneStepForward = new Coord(currentCoord.x, currentCoord.y + (this.isBlack()?-1:1));
+        }
+        if (canTwoStepForward) {
+            twoStepForward = new Coord(currentCoord.x, currentCoord.y + (this.isBlack()?-2:2));
+        }
 
         for (Coord c: friends.keySet()) {
             if (c.equals(oneStepForward)) {
