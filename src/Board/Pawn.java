@@ -60,12 +60,17 @@ public class Pawn extends Piece {
         if (!this.isMoved && canTwoStepForward) ret.add(twoStepForward);
 
         // eat
-        Coord eatWest = new Coord(currentCoord.x - 1, currentCoord.y + (this.isBlack()?-1:1));
-        Coord eatEat = new Coord(currentCoord.x + 1, currentCoord.y + (this.isBlack()?-1:1));
-
-        for (Coord c: enemies.keySet()) {
-            if (c.equals(eatWest)) ret.add(eatWest);
-            if (c.equals(eatEat)) ret.add(eatEat);
+        if (currentCoord.x > 0) {
+            Coord eatWest = new Coord(currentCoord.x - 1, currentCoord.y + (this.isBlack()?-1:1));
+            for (Coord c: enemies.keySet()) {
+                if (c.equals(eatWest)) ret.add(eatWest);
+            }
+        }
+        if (currentCoord.x < 7) {
+            Coord eatEast = new Coord(currentCoord.x + 1, currentCoord.y + (this.isBlack()?-1:1));
+            for (Coord c: enemies.keySet()) {
+                if (c.equals(eatEast)) ret.add(eatEast);
+            }
         }
 
         return ret;
