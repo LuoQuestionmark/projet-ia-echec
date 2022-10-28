@@ -60,7 +60,7 @@ public class Knight extends Piece {
 
     @Override
     public String getShortName() {
-        return "K";
+        return "N";
     }
     
 }
