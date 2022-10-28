@@ -25,8 +25,8 @@ public class Queen extends Piece {
 
         HashMap<Coord, Piece> friends, enemies;
         if (this.isBlack()) {
-            friends = this.board.getBlackPieces();
-            enemies = this.board.getWhitePieces();
+            friends = this.board.getBlackPieces(this);
+            enemies = this.board.getWhitePieces(this);
         }
         else {
             friends = this.board.getWhitePieces();
@@ -69,13 +69,14 @@ public class Queen extends Piece {
         yUpperLimit = Math.max(7, currentCoord.y);
 
         if (this.isBlack()) {
-            friends = this.board.getBlackPieces();
+            friends = this.board.getBlackPieces(this);
             enemies = this.board.getWhitePieces();
         }
         else {
-            friends = this.board.getWhitePieces();
+            friends = this.board.getWhitePieces(this);
             enemies = this.board.getBlackPieces();
         }
+        
 
         for (Coord c: friends.keySet()) {
             if (c.y == currentCoord.y) {

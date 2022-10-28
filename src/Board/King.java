@@ -71,10 +71,10 @@ public class King extends Piece {
 
         HashMap<Coord,Piece> friends;
         if (this.isBlack()) {
-            friends = board.getBlackPieces();
+            friends = board.getBlackPieces(this);
         }
         else {
-            friends = board.getWhitePieces();
+            friends = board.getWhitePieces(this);
         }
         for (Coord c: friends.keySet()) {
             if (ret.contains(c)) {

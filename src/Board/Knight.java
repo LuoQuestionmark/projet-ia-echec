@@ -38,10 +38,10 @@ public class Knight extends Piece {
 
         HashMap<Coord, Piece> friends;
         if (this.isBlack()) {
-            friends = this.board.getBlackPieces();
+            friends = this.board.getBlackPieces(this);
         }
         else {
-            friends = this.board.getWhitePieces();
+            friends = this.board.getWhitePieces(this);
         }
 
         TreeSet<Coord> illegaCoords = new TreeSet<Coord>();

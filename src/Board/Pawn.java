@@ -19,11 +19,11 @@ public class Pawn extends Piece {
 
         HashMap<Coord, Piece> friends, enemies;
         if (this.isBlack()) {
-            friends = this.board.getBlackPieces();
+            friends = this.board.getBlackPieces(this);
             enemies = this.board.getWhitePieces();
         }
         else {
-            friends = this.board.getWhitePieces();
+            friends = this.board.getWhitePieces(this);
             enemies = this.board.getBlackPieces();
         }
 

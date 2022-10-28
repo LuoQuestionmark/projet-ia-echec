@@ -4,6 +4,7 @@ package Board;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 import mUtil.*;
 
@@ -55,6 +56,29 @@ public class Board {
         }
         return blackPieces;
     }
+
+    public HashMap<Coord, Piece> getWhitePieces(Piece excludePiece) {
+        HashMap<Coord, Piece> whitePieces = new HashMap<>();
+        for (HashMap.Entry<Coord, Piece> e: board.entrySet()) {
+            if (e.getValue().isBlack()) continue;
+            if (e.getValue() == excludePiece) continue;
+            whitePieces.put(e.getKey(), e.getValue());
+        }
+        return whitePieces;
+    }
+
+    public HashMap<Coord, Piece> getBlackPieces(Piece excludePiece) {
+        HashMap<Coord, Piece> blackPieces = new HashMap<>();
+        for (HashMap.Entry<Coord, Piece> e: board.entrySet()) {
+            if (e.getValue() == excludePiece) continue;
+            if (e.getValue().isBlack()) {
+                blackPieces.put(e.getKey(), e.getValue());
+            }
+        }
+        return blackPieces;
+    }
+
+
 
     public void promotion(Coord c, PieceType pt) throws IllegalArgumentException {
         if (pt == PieceType.Pawn || pt == PieceType.King) {
