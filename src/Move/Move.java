@@ -1,6 +1,8 @@
 // a Move is a tuple containing two Coord: coordSrc and coordDst
 // representing the piece from the coordSrc moving to coordDst
-package mUtil;
+package Move;
+
+import mUtil.Coord;
 
 public class Move implements Comparable<Move> {
     public Coord coordSrc, coordDst;

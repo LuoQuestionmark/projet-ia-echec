@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
+import Move.*;
 import mUtil.*;
 
 public class Board implements Cloneable {

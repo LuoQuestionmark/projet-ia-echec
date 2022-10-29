@@ -1,6 +1,7 @@
 package Test;
 
 import Board.*;
+import Move.*;
 import mUtil.*;
 
 public class Test2 {

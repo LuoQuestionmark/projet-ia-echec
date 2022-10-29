@@ -1,6 +1,7 @@
-package mUtil;
+package Move;
 
 import Board.PieceType;
+import mUtil.Coord;
 
 public class MovePromotion extends Move {
     public PieceType promotion;

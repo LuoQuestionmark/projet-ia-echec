@@ -3,7 +3,7 @@ package Test;
 import java.util.Random;
 
 import Board.*;
-import mUtil.*;
+import Move.*;
 
 public class Test1 {
     public static void main(String[] args) {
