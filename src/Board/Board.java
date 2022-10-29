@@ -160,6 +160,9 @@ public class Board implements Cloneable {
                             ret.add(new MovePromotion(src, dst, pt));
                         }
                     }
+                    else {
+                        ret.add(new Move(src, dst));
+                    }
                 }
                 else {
                     ret.add(new Move(src, dst));
@@ -181,8 +184,10 @@ public class Board implements Cloneable {
         if (p.isBlack() ^ this.isBlackMove) {
             throw new IllegalArgumentException("illegal move: not the right color/turn");
         }
-        if (p.isBlack() && this.board.get(m.coordDst).isBlack()) {
-            throw new IllegalArgumentException("illegal move: cannot move to a place which is ouccupied by a piece of same color");
+        if (this.board.get(m.coordDst) != null) {
+            if (p.isBlack() == this.board.get(m.coordDst).isBlack()) {
+                throw new IllegalArgumentException("illegal move: cannot move to a place which is ouccupied by a piece of same color");
+            }
         }
 
         // now the action

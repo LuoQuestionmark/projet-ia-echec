@@ -6,11 +6,8 @@ import java.util.TreeSet;
 import mUtil.Coord;
 
 public class Pawn extends Piece {
-    private boolean isMoved;
-
     public Pawn(boolean isBlack) {
         super(isBlack);
-        this.isMoved = false;
     }
 
     @Override
@@ -37,7 +34,7 @@ public class Pawn extends Piece {
             if (currentCoord.y > 1) {
                 canTwoStepForward = true;
             }
-            if (currentCoord.y > 0) {
+            if (currentCoord.y == 6) {
                 canOneStepForward = true;
             }
         }
@@ -45,7 +42,7 @@ public class Pawn extends Piece {
             if (currentCoord.y < 6) {
                 canTwoStepForward = true;
             }
-            if (currentCoord.y < 7) {
+            if (currentCoord.y == 1) {
                 canOneStepForward = true;
             }
         }
@@ -81,7 +78,7 @@ public class Pawn extends Piece {
         }
 
         if (canOneStepForward) ret.add(oneStepForward);
-        if (!this.isMoved && canTwoStepForward) ret.add(twoStepForward);
+        if (canTwoStepForward) ret.add(twoStepForward);
 
         // eat
         if (currentCoord.x > 0) {
