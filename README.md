@@ -65,4 +65,5 @@ The main part of `Board` and `Piece` is now finish, which means now all the piec
 Next step:
 
 - write a function `move` to actually move a piece. This should return a new `Board` object;
+- write the functions `en passant` and `castling`;
 - write an evaluation function which evaluate the board.

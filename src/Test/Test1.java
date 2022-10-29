@@ -41,20 +41,5 @@ public class Test1 {
             System.out.println("move selected: " + ms);
             System.out.println(bs);
         }
-
-        // System.gc();
-        // Runtime rt = Runtime.getRuntime();
-        // long usedMB = (rt.totalMemory() - rt.freeMemory()) / 1024 / 1024;
-        // System.out.println(usedMB);
-
-        Board b2 = new Board();
-        b2.addPiece(new Coord(0, 6), new Pawn(false));
-        b2.addPiece(new Coord(0, 0), new Queen(false));
-        System.out.println("print the board (test):");
-        System.out.println(b2);
-
-        System.out.println("print the available moves");
-        System.out.println(b2.getAvaiableMoves());
-
     }
 }

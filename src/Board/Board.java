@@ -14,6 +14,8 @@ public class Board implements Cloneable {
     private TreeMap<Coord, Piece> board = new TreeMap<>();
 
     private boolean isBlackMove = false;
+    public Coord enpassant = null; // null means no "enpassant"
+                                    // otherwise is the last coord of the "enpassant"
 
     public Board() {
         for (PieceType pt: PieceType.values()) {
@@ -170,12 +172,23 @@ public class Board implements Cloneable {
             }
         }
 
+        // special case: en passant
+        if (enpassant != null) {
+            for (Map.Entry<Coord, Piece> e: pieces.entrySet()) {
+                if (e.getValue().getShortName().equals("P") == false) continue;
+                if (e.getKey().y != enpassant.y) continue;
+                if (Math.abs(e.getKey().x - enpassant.x) != 1) continue;
+                ret.add(new MoveEnpassnt(e.getKey(), new Coord(enpassant.x, enpassant.y + (e.getValue().isBlack()?-1:1))));
+            }
+        }
+
         return ret;
     }
 
     public Board move(Move m) throws IllegalArgumentException {
         // this time try to *move* a piece and get a new Board.
         Piece p;
+        Coord enpassantCoord = null;
 
         // check exceptions
         if ((p = this.board.get(m.coordSrc)) == null) {
@@ -190,15 +203,41 @@ public class Board implements Cloneable {
             }
         }
 
+        // check enpassant
+        if (p.getShortName().equals("P")) {
+            if (m.coordDst.y == 3 && !(p.isBlack())
+            || (m.coordDst.y == 4 &&   p.isBlack())) {
+                enpassantCoord = m.coordDst;
+            }
+        }        
+
         // now the action
         try {
             Board ret = this.clone();  // copy the object
             ret.isBlackMove = !(ret.isBlackMove); // inverse the turn
+            ret.enpassant = enpassantCoord;
 
-            // move the piece
-            ret.board.remove(m.coordSrc);
-            ret.board.remove(m.coordDst);
-            ret.board.put(m.coordDst, p);
+            if (m instanceof MoveEnpassnt) {
+                ret.board.remove(m.coordSrc);
+                ret.board.remove(this.enpassant);
+                ret.board.put(m.coordDst, p);
+            }
+            else if (m instanceof MovePromotion) {
+                PieceType newType = ((MovePromotion)m).promotion;
+                Piece newPiece = this.availablePieces.get(newType).get(p.isBlack()?0:1);
+                ret.board.remove(m.coordSrc);
+                ret.board.remove(m.coordDst);
+                ret.board.put(m.coordDst, newPiece);
+            }
+            else if (false) {
+                // TODO
+            }
+            else {
+                // move the piece
+                ret.board.remove(m.coordSrc);
+                ret.board.remove(m.coordDst);
+                ret.board.put(m.coordDst, p);
+            }
 
             return ret;
         }

@@ -32,10 +32,10 @@ public class Pawn extends Piece {
 
         if (this.isBlack()) {
             if (currentCoord.y > 1) {
-                canTwoStepForward = true;
+                canOneStepForward = true;
             }
             if (currentCoord.y == 6) {
-                canOneStepForward = true;
+                canTwoStepForward = true;
             }
         }
         else {
