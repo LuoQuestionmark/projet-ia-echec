@@ -1,6 +1,6 @@
 package Board;
 
-import java.util.HashMap;
+import java.util.TreeMap;
 import java.util.TreeSet;
 
 import mUtil.Coord;
@@ -8,23 +8,23 @@ import mUtil.Coord;
 public class Pawn extends Piece {
     private boolean isMoved;
 
-    public Pawn(Board b, boolean isBlack) {
-        super(b, isBlack);
+    public Pawn(boolean isBlack) {
+        super(isBlack);
         this.isMoved = false;
     }
 
     @Override
-    public TreeSet<Coord> getLegalMoves(Coord currentCoord) {
+    public TreeSet<Coord> getLegalMoves(Board currentBoard, Coord currentCoord) {
         TreeSet<Coord> ret = new TreeSet<>();
 
-        HashMap<Coord, Piece> friends, enemies;
+        TreeMap<Coord, Piece> friends, enemies;
         if (this.isBlack()) {
-            friends = this.board.getBlackPieces(this);
-            enemies = this.board.getWhitePieces();
+            friends = currentBoard.getBlackPieces(currentCoord);
+            enemies = currentBoard.getWhitePieces();
         }
         else {
-            friends = this.board.getWhitePieces(this);
-            enemies = this.board.getBlackPieces();
+            friends = currentBoard.getWhitePieces(currentCoord);
+            enemies = currentBoard.getBlackPieces();
         }
 
         // move forward

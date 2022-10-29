@@ -1,6 +1,6 @@
 package Board;
 
-import java.util.HashMap;
+import java.util.TreeMap;
 import java.util.TreeSet;
 import java.lang.Math;
 
@@ -8,12 +8,12 @@ import mUtil.Coord;
 
 public class Rock extends Piece{
 
-    public Rock(Board b, boolean isBlack) {
-        super(b, isBlack);
+    public Rock(boolean isBlack) {
+        super(isBlack);
     }
 
     @Override
-    public TreeSet<Coord> getLegalMoves(Coord currentCoord) {
+    public TreeSet<Coord> getLegalMoves(Board currentBoard, Coord currentCoord) {
         int xLowerLimit, xUpperLimit, yLowerLimit, yUpperLimit;
         xLowerLimit = Math.min(0, currentCoord.x);
         xUpperLimit = Math.max(7, currentCoord.x);
@@ -21,14 +21,14 @@ public class Rock extends Piece{
         yLowerLimit = Math.min(0, currentCoord.y);
         yUpperLimit = Math.max(7, currentCoord.y);
         
-        HashMap<Coord, Piece> friends, enemies;
+        TreeMap<Coord, Piece> friends, enemies;
         if (this.isBlack()) {
-            friends = this.board.getBlackPieces(this);
-            enemies = this.board.getWhitePieces();
+            friends = currentBoard.getBlackPieces(currentCoord);
+            enemies = currentBoard.getWhitePieces();
         }
         else {
-            friends = this.board.getWhitePieces(this);
-            enemies = this.board.getBlackPieces();
+            friends = currentBoard.getWhitePieces(currentCoord);
+            enemies = currentBoard.getBlackPieces();
         }
 
         for (Coord c: friends.keySet()) {

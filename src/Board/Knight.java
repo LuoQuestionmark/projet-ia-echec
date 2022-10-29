@@ -1,19 +1,19 @@
 package Board;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.TreeMap;
 import java.util.TreeSet;
 
 import mUtil.Coord;
 
 public class Knight extends Piece {
 
-    public Knight(Board b, boolean isBlack) {
-        super(b, isBlack);
+    public Knight(boolean isBlack) {
+        super(isBlack);
     }
 
     @Override
-    public TreeSet<Coord> getLegalMoves(Coord currentCoord) {
+    public TreeSet<Coord> getLegalMoves(Board currentBoard, Coord currentCoord) {
         ArrayList<Integer> p1 = new ArrayList<>();
         p1.add(1); p1.add(-1);
         ArrayList<Integer> p2 = new ArrayList<>(p1);
@@ -36,12 +36,12 @@ public class Knight extends Piece {
             }
         }
 
-        HashMap<Coord, Piece> friends;
+        TreeMap<Coord, Piece> friends;
         if (this.isBlack()) {
-            friends = this.board.getBlackPieces(this);
+            friends = currentBoard.getBlackPieces(currentCoord);
         }
         else {
-            friends = this.board.getWhitePieces(this);
+            friends = currentBoard.getWhitePieces(currentCoord);
         }
 
         TreeSet<Coord> illegaCoords = new TreeSet<Coord>();

@@ -4,13 +4,14 @@ package Board;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.Map;
+import java.util.TreeMap;
 
 import mUtil.*;
 
-public class Board {
+public class Board implements Cloneable {
     private HashMap<PieceType, ArrayList<Piece>> availablePieces = new HashMap<>();
-    private HashMap<Coord, Piece> board = new HashMap<>();
+    private TreeMap<Coord, Piece> board = new TreeMap<>();
 
     private boolean isBlackMove = false;
 
@@ -21,12 +22,12 @@ public class Board {
 
         boolean bVals[] = {true, false}; // black, white
         for (boolean isBlack: bVals) {
-            availablePieces.get(PieceType.Bishop).add(new Bishop(this, isBlack));
-            availablePieces.get(PieceType.Knight).add(new Knight(this, isBlack));
-            availablePieces.get(PieceType.Pawn).add(new Pawn(this, isBlack));
-            availablePieces.get(PieceType.Rock).add(new Rock(this, isBlack));
-            availablePieces.get(PieceType.King).add(new King(this, isBlack));
-            availablePieces.get(PieceType.Queen).add(new Queen(this, isBlack));
+            availablePieces.get(PieceType.Bishop).add(new Bishop(isBlack));
+            availablePieces.get(PieceType.Knight).add(new Knight(isBlack));
+            availablePieces.get(PieceType.Pawn).add(new Pawn(isBlack));
+            availablePieces.get(PieceType.Rock).add(new Rock(isBlack));
+            availablePieces.get(PieceType.King).add(new King(isBlack));
+            availablePieces.get(PieceType.Queen).add(new Queen(isBlack));
         }
     }
 
@@ -38,8 +39,8 @@ public class Board {
         board.put(c, p);
     }
 
-    public HashMap<Coord, Piece> getWhitePieces() {
-        HashMap<Coord, Piece> whitePieces = new HashMap<>();
+    public TreeMap<Coord, Piece> getWhitePieces() {
+        TreeMap<Coord, Piece> whitePieces = new TreeMap<>();
         for (HashMap.Entry<Coord, Piece> e: board.entrySet()) {
             if (e.getValue().isBlack()) continue;
             whitePieces.put(e.getKey(), e.getValue());
@@ -47,8 +48,8 @@ public class Board {
         return whitePieces;
     }
 
-    public HashMap<Coord, Piece> getBlackPieces() {
-        HashMap<Coord, Piece> blackPieces = new HashMap<>();
+    public TreeMap<Coord, Piece> getBlackPieces() {
+        TreeMap<Coord, Piece> blackPieces = new TreeMap<>();
         for (HashMap.Entry<Coord, Piece> e: board.entrySet()) {
             if (e.getValue().isBlack()) {
                 blackPieces.put(e.getKey(), e.getValue());
@@ -57,28 +58,26 @@ public class Board {
         return blackPieces;
     }
 
-    public HashMap<Coord, Piece> getWhitePieces(Piece excludePiece) {
-        HashMap<Coord, Piece> whitePieces = new HashMap<>();
+    public TreeMap<Coord, Piece> getWhitePieces(Coord excludeCoord) {
+        TreeMap<Coord, Piece> whitePieces = new TreeMap<>();
         for (HashMap.Entry<Coord, Piece> e: board.entrySet()) {
             if (e.getValue().isBlack()) continue;
-            if (e.getValue() == excludePiece) continue;
+            if (e.getKey().equals(excludeCoord)) continue;
             whitePieces.put(e.getKey(), e.getValue());
         }
         return whitePieces;
     }
 
-    public HashMap<Coord, Piece> getBlackPieces(Piece excludePiece) {
-        HashMap<Coord, Piece> blackPieces = new HashMap<>();
+    public TreeMap<Coord, Piece> getBlackPieces(Coord excludeCoord) {
+        TreeMap<Coord, Piece> blackPieces = new TreeMap<>();
         for (HashMap.Entry<Coord, Piece> e: board.entrySet()) {
-            if (e.getValue() == excludePiece) continue;
+            if (e.getKey().equals(excludeCoord)) continue;
             if (e.getValue().isBlack()) {
                 blackPieces.put(e.getKey(), e.getValue());
             }
         }
         return blackPieces;
     }
-
-
 
     public void promotion(Coord c, PieceType pt) throws IllegalArgumentException {
         if (pt == PieceType.Pawn || pt == PieceType.King) {
@@ -140,7 +139,7 @@ public class Board {
 
     public ArrayList<Move> getAvaiableMoves() {
         ArrayList<Move> ret = new ArrayList<>();
-        HashMap<Coord, Piece> pieces;
+        TreeMap<Coord, Piece> pieces;
 
         if (isBlackMove) {
             pieces = getBlackPieces();
@@ -149,9 +148,9 @@ public class Board {
             pieces = getWhitePieces();
         }
 
-        for (HashMap.Entry<Coord, Piece> e: pieces.entrySet()) {
+        for (Map.Entry<Coord, Piece> e: pieces.entrySet()) {
             Coord src = e.getKey();
-            for (Coord dst: e.getValue().getLegalMoves(src)) {
+            for (Coord dst: e.getValue().getLegalMoves(this, src)) {
                 // special case: promotion detection
                 if (e.getValue().getShortName().equals("P")) {
                     if ((  e.getValue().isBlack()  && dst.y == 0)
@@ -171,7 +170,37 @@ public class Board {
         return ret;
     }
 
+    public Board move(Move m) throws IllegalArgumentException {
+        // this time try to *move* a piece and get a new Board.
+        Piece p;
 
+        // check exceptions
+        if ((p = this.board.get(m.coordSrc)) == null) {
+            throw new IllegalArgumentException("illegal move: no piece can be found at the position \"src\"");
+        }
+        if (p.isBlack() ^ this.isBlackMove) {
+            throw new IllegalArgumentException("illegal move: not the right color/turn");
+        }
+        if (p.isBlack() && this.board.get(m.coordDst).isBlack()) {
+            throw new IllegalArgumentException("illegal move: cannot move to a place which is ouccupied by a piece of same color");
+        }
+
+        // now the action
+        try {
+            Board ret = this.clone();  // copy the object
+            ret.isBlackMove = !(ret.isBlackMove); // inverse the turn
+
+            // move the piece
+            ret.board.remove(m.coordSrc);
+            ret.board.remove(m.coordDst);
+            ret.board.put(m.coordDst, p);
+
+            return ret;
+        }
+        catch (CloneNotSupportedException e) {
+            throw new IllegalArgumentException("this board is not initialized properly with a board, thus cannot be cloned");
+        }
+    }
 
     @Override
     public String toString() {
@@ -191,6 +220,20 @@ public class Board {
             }
             ret += "\n";
         }
+
+        return ret;
+    }
+
+    @Override
+    public Board clone() throws CloneNotSupportedException {
+        if (this.board == null) {
+            throw new CloneNotSupportedException("board not totally initialized: no board initialized");
+        }
+
+        Board ret = new Board();
+        ret.availablePieces = this.availablePieces;
+        ret.board = new TreeMap<Coord, Piece>(this.board);
+        ret.isBlackMove = this.isBlackMove;
 
         return ret;
     }

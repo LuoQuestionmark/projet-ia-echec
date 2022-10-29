@@ -1,18 +1,18 @@
 package Board;
 
-import java.util.HashMap;
+import java.util.TreeMap;
 import java.util.TreeSet;
 
 import mUtil.Coord;
 
 public class Queen extends Piece {
 
-    public Queen(Board b, boolean isBlack) {
-        super(b, isBlack);
+    public Queen(boolean isBlack) {
+        super(isBlack);
     }
 
     @Override
-    public TreeSet<Coord> getLegalMoves(Coord currentCoord) {
+    public TreeSet<Coord> getLegalMoves(Board currentBoard, Coord currentCoord) {
         // well this is easy, just put the code for Rock and for Bishop then we are done
         TreeSet<Coord> ret = new TreeSet<>();
 
@@ -23,14 +23,14 @@ public class Queen extends Piece {
         nwLimit = Math.min(currentCoord.x, 7 - currentCoord.y);
         swLimit = Math.min(currentCoord.x, currentCoord.y);
 
-        HashMap<Coord, Piece> friends, enemies;
+        TreeMap<Coord, Piece> friends, enemies;
         if (this.isBlack()) {
-            friends = this.board.getBlackPieces(this);
-            enemies = this.board.getWhitePieces(this);
+            friends = currentBoard.getBlackPieces(currentCoord);
+            enemies = currentBoard.getWhitePieces(currentCoord);
         }
         else {
-            friends = this.board.getWhitePieces();
-            enemies = this.board.getBlackPieces();
+            friends = currentBoard.getWhitePieces();
+            enemies = currentBoard.getBlackPieces();
         }
 
         for (int i = 1; i <= neLimit; i++) {
@@ -69,12 +69,12 @@ public class Queen extends Piece {
         yUpperLimit = Math.max(7, currentCoord.y);
 
         if (this.isBlack()) {
-            friends = this.board.getBlackPieces(this);
-            enemies = this.board.getWhitePieces();
+            friends = currentBoard.getBlackPieces(currentCoord);
+            enemies = currentBoard.getWhitePieces();
         }
         else {
-            friends = this.board.getWhitePieces(this);
-            enemies = this.board.getBlackPieces();
+            friends = currentBoard.getWhitePieces(currentCoord);
+            enemies = currentBoard.getBlackPieces();
         }
         
 

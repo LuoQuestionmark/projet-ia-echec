@@ -57,3 +57,12 @@ So I have come to a new implementation of the chess board:
 - the board itself contains an array of `Piece`;
 - each reference `null` if the case is empty, or a certain `Piece` object if it isn't;
 - all the `Piece` are created once in a general way, and it will no longer contain the information of its coordinnation.
+
+## note: 28 oct
+
+The main part of `Board` and `Piece` is now finish, which means now all the pieces can be placed on the board and I am now able to know how to move them.
+
+Next step:
+
+- write a function `move` to actually move a piece. This should return a new `Board` object;
+- write an evaluation function which evaluate the board.

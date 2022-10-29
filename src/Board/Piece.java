@@ -9,8 +9,8 @@ import mUtil.Coord;
 public abstract class Piece {
     protected boolean isBlackVal;
     // protected Coord coord; // the position
-    protected Board board;
-    abstract public TreeSet<Coord> getLegalMoves(Coord currentCoord);
+    // protected Board board;
+    abstract public TreeSet<Coord> getLegalMoves(Board currentBoard, Coord currentCoord);
 
     abstract public String getShortName();
     
@@ -18,8 +18,8 @@ public abstract class Piece {
         //     throw new IllegalAccessError("don't call this function directly");
         // }
         
-    public Piece(Board b, boolean isBlack) {
-        this.board = b;
+    public Piece(boolean isBlack) {
+        // this.board = b;
         this.isBlackVal = isBlack;
         // this.coord = initCoord;
     }
@@ -27,13 +27,5 @@ public abstract class Piece {
     public boolean isBlack() {
         return isBlackVal;
     }
-    
-    // public Coord getCoord() {
-    //     return coord;
-    // };
-    
-    // public boolean moveTo(Coord c) {
-    //     this.coord = c;
-    //     return true;
-    // }
+
 }

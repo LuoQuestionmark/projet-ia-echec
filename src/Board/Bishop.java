@@ -1,6 +1,6 @@
 package Board;
 
-import java.util.HashMap;
+import java.util.TreeMap;
 import java.util.TreeSet;
 import java.lang.Math;
 
@@ -8,12 +8,12 @@ import mUtil.Coord;
 
 public class Bishop extends Piece{
 
-    public Bishop(Board b, boolean isBlack) {
-        super(b, isBlack);
+    public Bishop(boolean isBlack) {
+        super(isBlack);
     }
 
     @Override
-    public TreeSet<Coord> getLegalMoves(Coord currentCoord) {
+    public TreeSet<Coord> getLegalMoves(Board currentBoard, Coord currentCoord) {
         TreeSet<Coord> ret = new TreeSet<>();
 
         int nwLimit, swLimit, neLimit, seLimit;
@@ -23,14 +23,14 @@ public class Bishop extends Piece{
         nwLimit = Math.min(currentCoord.x, 7 - currentCoord.y);
         swLimit = Math.min(currentCoord.x, currentCoord.y);
 
-        HashMap<Coord, Piece> friends, enemies;
+        TreeMap<Coord, Piece> friends, enemies;
         if (this.isBlack()) {
-            friends = this.board.getBlackPieces(this);
-            enemies = this.board.getWhitePieces();
+            friends = currentBoard.getBlackPieces(currentCoord);
+            enemies = currentBoard.getWhitePieces();
         }
         else {
-            friends = this.board.getWhitePieces(this);
-            enemies = this.board.getBlackPieces();
+            friends = currentBoard.getWhitePieces(currentCoord);
+            enemies = currentBoard.getBlackPieces();
         }
 
         for (int i = 1; i <= neLimit; i++) {

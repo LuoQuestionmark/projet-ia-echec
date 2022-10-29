@@ -1,19 +1,20 @@
 package Board;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.TreeSet;
 
 import mUtil.Coord;
 
 public class King extends Piece {
 
-    public King(Board b, boolean isBlack) {
-        super(b, isBlack);
+    public King(boolean isBlack) {
+        super(isBlack);
     }
 
     @Override
-    public TreeSet<Coord> getLegalMoves(Coord currentCoord) {
+    public TreeSet<Coord> getLegalMoves(Board currentBoard, Coord currentCoord) {
         // this one is tricky, because there is a rule binding with
         // the move of the opponent; king cannot suicide
         TreeSet<Coord> ret = new TreeSet<Coord>();
@@ -38,16 +39,16 @@ public class King extends Piece {
         ret.remove(currentCoord);
 
         // step 2: remove
-        HashMap<Coord,Piece> enemies;
+        TreeMap<Coord,Piece> enemies;
         TreeSet<Coord> illegaCoords = new TreeSet<Coord>();
         if (this.isBlack()) {
-            enemies = board.getWhitePieces();
+            enemies = currentBoard.getWhitePieces();
         }
         else {
-            enemies = board.getBlackPieces();
+            enemies = currentBoard.getBlackPieces();
         }
 
-        for (HashMap.Entry<Coord,Piece> e: enemies.entrySet()) {
+        for (Map.Entry<Coord,Piece> e: enemies.entrySet()) {
             if (e.getValue().getShortName().equals("K")) {
                 // if it's opponent king, then the calculus should be different
                 // to prevent infinite loop
@@ -62,19 +63,19 @@ public class King extends Piece {
                 }
                 continue;
             }
-            for (Coord m: e.getValue().getLegalMoves(e.getKey())) {
+            for (Coord m: e.getValue().getLegalMoves(currentBoard, e.getKey())) {
                 if (ret.contains(m)) {
                     illegaCoords.add(m);
                 }
             }
         }
 
-        HashMap<Coord,Piece> friends;
+        TreeMap<Coord,Piece> friends;
         if (this.isBlack()) {
-            friends = board.getBlackPieces(this);
+            friends = currentBoard.getBlackPieces(currentCoord);
         }
         else {
-            friends = board.getWhitePieces(this);
+            friends = currentBoard.getWhitePieces(currentCoord);
         }
         for (Coord c: friends.keySet()) {
             if (ret.contains(c)) {
