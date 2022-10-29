@@ -17,5 +17,11 @@ public class Test2 {
         System.out.println(b3);
         System.out.println("now see if enpassant is available");
         System.out.println(b3.getAvaiableMoves());
+        for (Move mi: b3.getAvaiableMoves()) {
+            if (mi instanceof MoveEnpassnt) {
+                b3 = b3.move(mi);
+            }
+        }
+        System.out.println(b3);
     }
 }

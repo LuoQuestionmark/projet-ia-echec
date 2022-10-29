@@ -18,6 +18,11 @@ public class Board implements Cloneable {
     public Coord enpassant = null; // null means no "enpassant"
                                     // otherwise is the last coord of the "enpassant"
 
+    // zero for black, one for white
+    private boolean[] isKingMoved = {false, false};
+    private boolean[] isLeftRockMoved = {false, false};
+    private boolean[] isRightRockMoved = {false, false};
+
     public Board() {
         for (PieceType pt: PieceType.values()) {
             availablePieces.put(pt, new ArrayList<Piece>());
@@ -183,6 +188,9 @@ public class Board implements Cloneable {
             }
         }
 
+        // spcial case: castling
+        ret.addAll(getMoveCastlings());
+
         return ret;
     }
 
@@ -230,8 +238,13 @@ public class Board implements Cloneable {
                 ret.board.remove(m.coordDst);
                 ret.board.put(m.coordDst, newPiece);
             }
-            else if (false) {
-                // TODO
+            else if (m instanceof MoveCastling) {
+                MoveCastling mc = ((MoveCastling)m);
+                Piece rockPiece = this.availablePieces.get(PieceType.Rock).get(p.isBlack()?0:1);
+                ret.board.remove(m.coordSrc);
+                ret.board.put(m.coordDst, p);
+                ret.board.remove(mc.coordSrc);
+                ret.board.put(mc.coordDst2, rockPiece);
             }
             else {
                 // move the piece
@@ -245,6 +258,95 @@ public class Board implements Cloneable {
         catch (CloneNotSupportedException e) {
             throw new IllegalArgumentException("this board is not initialized properly with a board, thus cannot be cloned");
         }
+    }
+
+    public static boolean isUnderAttack(Board b, Coord c, boolean coordOnBlackSide) {
+        TreeMap<Coord, Piece> enemies;
+        if (coordOnBlackSide) {
+            enemies = b.getWhitePieces();
+        }
+        else {
+            enemies = b.getBlackPieces();
+        }
+
+        for (Map.Entry<Coord,Piece> e: enemies.entrySet()) {
+            if (e.getValue().getShortName().equals("K")) {
+                // if it's opponent king, then the calculus should be different
+                // to prevent infinite loop
+                // so we calculate manually the coords around the enemy king
+                Coord oppoKingCoord = e.getKey();
+                for (int x = oppoKingCoord.x - 1; x < oppoKingCoord.x + 1; x++) {
+                    for (int y = oppoKingCoord.y - 1; y < oppoKingCoord.y + 1; y++) {
+                        if (x < 0 || x > 7 || y < 0 || y > 7) continue;
+                        if (x == oppoKingCoord.x && y == oppoKingCoord.y) continue;
+                        if (c.x == x && c.y == y) return true;
+                    }
+                }
+                continue;
+            }
+            for (Coord m: e.getValue().getLegalMoves(b, e.getKey())) {
+                if (c.equals(m)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private ArrayList<MoveCastling> getMoveCastlings() {
+        // function return all possible castlings or empty list
+        ArrayList<MoveCastling> ret = new ArrayList<>();
+        int index = isBlackMove?0:1;
+        int row = isBlackMove?7:0;
+        Piece p;
+        if (isKingMoved[index]) return ret;
+        if ((p = board.get(new Coord(4, row))) == null) return ret;
+        if (p.getShortName().equals("K") == false) return ret;
+
+        boolean canLeftCastling = true;
+        boolean canRightCastling = true;
+        if (!(isLeftRockMoved[index])) {
+            for (int i = 1; i < 4; i++) {
+                if (board.containsKey(new Coord(i, row))) {
+                    canLeftCastling = false;
+                    break;
+                }
+                if (Board.isUnderAttack(this, new Coord(i, row), isBlackMove)) {
+                    canLeftCastling = false;
+                    break;
+                }
+            }
+
+            if (canLeftCastling) {
+                ret.add(new MoveCastling(new Coord(4, row),
+                                         new Coord(2, row),
+                                         new Coord(0, row),
+                                         new Coord(3, row)));
+            }
+        }
+
+        if (!(isRightRockMoved[index])) {
+            for (int i = 4; i < 7; i++) {
+                if (board.containsKey(new Coord(i, row))) {
+                    canRightCastling = false;
+                    break;
+                }
+                if (Board.isUnderAttack(this, new Coord(i, row), isBlackMove)) {
+                    canRightCastling = false;
+                    break;
+                }
+            }
+
+            if (canRightCastling) {
+                ret.add(new MoveCastling(new Coord(4, row),
+                                         new Coord(6, row),
+                                         new Coord(7, row),
+                                         new Coord(5, row)));
+            }
+        }
+
+        return ret;
     }
 
     @Override
