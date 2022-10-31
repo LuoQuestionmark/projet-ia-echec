@@ -18,6 +18,7 @@ public class Board implements Cloneable {
     public Coord enpassant = null; // null means no "enpassant"
                                     // otherwise is the last coord of the "enpassant"
 
+    // these variables are used to track the "castling"
     // zero for black, one for white
     private boolean[] isKingMoved = {false, false};
     private boolean[] isLeftRockMoved = {false, false};
@@ -349,6 +350,76 @@ public class Board implements Cloneable {
         return ret;
     }
 
+    public double evaluate() throws IllegalArgumentException {
+        // this function should give a score to the actual board, see the README for more details.
+
+        double score = 0;
+        boolean isBlackKingAlive = false;
+        boolean isWhiteKingAlive = false;
+
+        for (Piece p: this.board.values()) {
+            // this should include every and all pieces
+            int positivity;
+            double pieceScore;
+
+            if (p.isBlack()) {
+                positivity = -1;
+            }
+            else {
+                positivity = 1;
+            }
+
+            switch (p.getShortName()) {
+                case "P":
+                    pieceScore = 1;
+                    break;
+
+                case "N":
+                case "B":
+                    pieceScore = 3;
+                    break;
+                
+                case "R":
+                    pieceScore = 5;
+                    break;
+
+                case "Q":
+                    pieceScore = 9;
+                    break;
+
+                case "K":
+                    // the test is done elsewhere
+                    pieceScore = 0;
+                    if (positivity == 1) {
+                        isWhiteKingAlive = true;
+                    }
+                    else {
+                        isBlackKingAlive = true;
+                    }
+                    break;
+            
+                default:
+                    throw new IllegalArgumentException("Error when analysing the board: un recognized piece shortname: " + p.getShortName());
+            }
+
+            score += positivity * pieceScore;
+        }
+
+        if (!(isBlackKingAlive || isWhiteKingAlive)) {
+            // illegal situation
+            // still wondering if it ould happen
+            return Double.NaN;
+        }
+        else if (!(isBlackKingAlive)) {
+            return Double.POSITIVE_INFINITY;
+        }
+        else if (!(isWhiteKingAlive)) {
+            return Double.NEGATIVE_INFINITY;
+        }
+
+        return score;
+    }
+
     @Override
     public String toString() {
         String ret = "";
@@ -367,6 +438,8 @@ public class Board implements Cloneable {
             }
             ret += "\n";
         }
+
+        ret += String.format("evaluation: %.2f", this.evaluate());
 
         return ret;
     }

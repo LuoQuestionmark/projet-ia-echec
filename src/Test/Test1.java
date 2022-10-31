@@ -35,7 +35,7 @@ public class Test1 {
         Board bs = bbis2;
         Random r = new Random();
 
-        for (int i = 0; i < 30; i++) {
+        for (int i = 0; i < 3; i++) {
             ms = bs.getAvaiableMoves().get(r.nextInt(bs.getAvaiableMoves().size()));
             bs = bs.move(ms);
             System.out.println("move selected: " + ms);

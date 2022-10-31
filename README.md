@@ -64,6 +64,38 @@ The main part of `Board` and `Piece` is now finish, which means now all the piec
 
 Next step:
 
-- write a function `move` to actually move a piece. This should return a new `Board` object;
-- write the functions `en passant` and `castling`;
-- write an evaluation function which evaluate the board.
+- [x] write a function `move` to actually move a piece. This should return a new `Board` object;
+- [x] write the functions `en passant` and `castling`;
+- [ ] write an evaluation function which evaluate the board.
+
+## note: 31 oct
+
+Now the `move` `en passant` and `castling` are done. Still need the `evaluate` to finish this part.
+
+### evalutation function
+
+The evaluation function should enable the `Board` to know if one of the players is more or less avanced compare to the other. So a function like the following:
+
+```java
+double evaluate(); // return number from -inf to inf
+```
+
+is what I want.
+
+#### Convention of evaluate function
+
+- if the white wins, then the note should be $\inf$, if the black wins, then $-\inf$;
+- if the board is perfectly even, then the score should be $0$;
+- if the game is ended as even, then the score should be $0$.
+- the more pieces one side has, the more score it gains;
+- the more available moves one side has, the more score it gains.
+
+#### Implementation
+
+I think the score mentioned [here](https://support.chess.com/article/656-what-do-the-computer-evaluation-numbers-mean-like-225) should be a good kick starter.
+
+Basically:
+> 1 = a pawn <br>
+> 3 = a Knight or Bishop <br>
+> 5 = a Rook <br>
+> 9 = a Queen
