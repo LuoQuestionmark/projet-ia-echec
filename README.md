@@ -13,7 +13,7 @@ Now there are multiples tasks to be done:
 
 - [ ] find a way to input data into the system
 - [ ] find a way to get the output. i.e. what is the move from arena
-- [ ] program in java to rebuild the scenery
+- [x] program in java to rebuild the scenery
 - [ ] program an AI to find the best move in the scenery
 
 ### input
@@ -95,7 +95,68 @@ is what I want.
 I think the score mentioned [here](https://support.chess.com/article/656-what-do-the-computer-evaluation-numbers-mean-like-225) should be a good kick starter.
 
 Basically:
-> 1 = a pawn <br>
-> 3 = a Knight or Bishop <br>
-> 5 = a Rook <br>
+> 1 = a pawn
+>
+> 3 = a Knight or Bishop
+>
+> 5 = a Rook
+>
 > 9 = a Queen
+
+## note: 1 nov
+
+Since the part with rebuilding the scenario is done, I now search and add the [standard](./engine-interface.txt) of the engine interface to implement[^1].
+
+[^1]: I found it [here](https://www.shredderchess.com/download.html).
+
+According to the document, 
+
+> all communication is done via standard input and output with text commands
+
+... input and output are done with `print`.
+
+> the engine must always be able to process input from stdin, even while thinking
+
+... multithread is needed.
+
+>all command strings the engine receives will end with '\n',  also all commands the GUI receives should end with '\n',
+>
+> arbitrary white space between tokens is allowed
+>
+> if the engine or the GUI receives an unknown command or token it should just ignore it and try to parse the rest of the string in this line.
+>
+> if the engine receives a command which is not supposed to come, for example "stop" when the engine is not calculating, it should also just ignore it
+
+... a simple parser is needed.
+
+> The engine will always be in forced mode which means it should never start calculating or pondering without receiving a "go" command first
+>
+> The move format is in long algebraic notation.
+
+... some other conventions.
+
+### the interface to be done
+
+#### input (to the engine)
+
+```text
+uci
+debug [on | off]
+isready
+setoption name <id> [value <x>]
+register
+ucinewgame
+position [fen <fenstring> | startpos ]  moves <move1> .... <movei>
+go
+stop
+ponderhit
+quit
+```
+
+#### output
+
+```text
+(not finish yet)
+```
+
+Considering it's a long program to be done, I will do it later.
