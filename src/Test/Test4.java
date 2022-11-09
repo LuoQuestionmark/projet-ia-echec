@@ -9,6 +9,14 @@ public class Test4 {
         Board b = new Board();
         b.newGame();
         ChessAnalyser ca = new ChessAnalyser(b);
+        // long startTime = System.nanoTime();
+        // ca.explore(3);
+        // long endTime = System.nanoTime();
+        // System.out.println((endTime - startTime)/1000000000.0);
+        
+        // ca.getRoot().dumpGraph("./output.dot");
+        // System.exit(0);
+
         Thread t = new Thread(ca);
         t.start();
 
