@@ -205,3 +205,9 @@ class Node {
 ### wrapping
 
 After that I still need an interface to actually do the work of communication. Which will also create the instance of `ChessAnalyser` for each new move. In the other word, each `ChessAnalyser` will only calculate one legal move.
+
+## note: 09 nov
+
+I tested the code that I wrote yesterday. While it seems to be working, it doesn't give a satisfaite result: there is 0 everywhere, due to the lack of a *heuristic function*. In the other word, since there is not much happening at the start of the game - let's say, for the first four moves there is rarely any piece is taken - then their score are all zeros. That's about $10^4$ zeros floating around, before the algorithme can merely do anything useful.
+
+That's why I think it's necessary to add a function $h$, to calculate a hidden score showing the advantage/disadvantage of one player. Besides, I am not sure if the $\alpha - \beta$ works as I want. More tests are needing.
