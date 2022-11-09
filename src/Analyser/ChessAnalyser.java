@@ -8,17 +8,20 @@ import Move.Move;
 public class ChessAnalyser implements Runnable {
 
     private Board board;
-    private Node root;
+    private volatile Node root;
+    private volatile Node oldRoot;
     
     private volatile boolean isFinish;
     private boolean isBlackSide;
     
-    private final int depthLimit = 2; 
+    private final int depthLimit = 3; 
+    private final boolean isHeuristic = true;
     
     public ChessAnalyser(Board b) {
         this.board = b;
         this.isFinish = false;
         this.isBlackSide = b.isBlackMove();
+        this.root = new Node(board);
     }
     
     public Node getRoot() {
@@ -33,6 +36,10 @@ public class ChessAnalyser implements Runnable {
         //     e.printStackTrace();
         //     return null;
         // }
+
+        if (this.oldRoot != null) {
+            this.root = this.oldRoot;
+        }
 
         Move ret = null;
         double tmp = isBlackSide?Double.POSITIVE_INFINITY:Double.NEGATIVE_INFINITY;
@@ -60,7 +67,7 @@ public class ChessAnalyser implements Runnable {
         // considering that this function can alter
         // the value within the node, to prevent future
         // error, this is a 'synchronized' here.
-        root.calScore();
+        root.calScore(isHeuristic);
         this.explore(depth, root);
     }
 
@@ -73,16 +80,16 @@ public class ChessAnalyser implements Runnable {
         for (Move m: b.getAvailableMoves()) {
             // simulate each possibility
             Board nb = b.move(m);
-            Node nn = new Node(nb);
+            Node nn = new Node(father, nb);
 
-            double score = nn.calScore();
+            double score = nn.calScore(isHeuristic);
             father.addNode(m, nn);
 
             // alpha-beta cut
-            if (isBlackSide && father.getScore() < score) {
+            if (isBlackSide && father.getMin() < score) {
                 return;
             }
-            if (!(isBlackSide) && father.getScore() > score) {
+            if (!(isBlackSide) && father.getMax() > score) {
                 return;
             }
 
@@ -103,11 +110,11 @@ public class ChessAnalyser implements Runnable {
 
     @Override
     public void run() {
-        this.root = new Node(board);
         int depth = 2;
         while (!isFinish && depth <= depthLimit) {
             explore(depth);
-            depth += 2;
+            depth += 1;
+            this.oldRoot = this.root;
         }
     }
 }

@@ -11,6 +11,9 @@ import Move.*;
 import mUtil.*;
 
 public class Board implements Cloneable {
+
+    private final double heuristicConst = 0.7;
+
     private HashMap<PieceType, ArrayList<Piece>> availablePieces = new HashMap<>();
     private TreeMap<Coord, Piece> board = new TreeMap<>();
 
@@ -425,6 +428,21 @@ public class Board implements Cloneable {
         return score;
     }
 
+    public double evaluate(boolean addHeuristic) throws IllegalArgumentException {
+        double ret = evaluate();
+        if (!(addHeuristic)) return ret;
+
+        // now do the job
+        for (Coord c: this.getBlackPieces().keySet()) {
+            ret -= (Math.abs(c.x - 3.5) + Math.abs(c.y - 3.5)) * this.heuristicConst;
+        }
+        for (Coord c: this.getWhitePieces().keySet()) {
+            ret += (Math.abs(c.x - 3.5) + Math.abs(c.y - 3.5)) * this.heuristicConst;
+        }
+
+        return ret;
+    }
+
     @Override
     public String toString() {
         String ret = "";
@@ -444,7 +462,7 @@ public class Board implements Cloneable {
             ret += "\n";
         }
 
-        ret += String.format("evaluation: %.2f", this.evaluate());
+        ret += String.format("evaluation: %.2f", this.evaluate(true));
 
         return ret;
     }
