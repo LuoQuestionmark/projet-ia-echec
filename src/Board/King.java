@@ -39,7 +39,7 @@ public class King extends Piece {
 
         // step 2: remove
         // TreeMap<Coord,Piece> enemies;
-        TreeSet<Coord> illegaCoords = new TreeSet<Coord>();
+        TreeSet<Coord> illegalCoords = new TreeSet<Coord>();
         // if (this.isBlack()) {
         //     enemies = currentBoard.getWhitePieces();
         // }
@@ -57,7 +57,7 @@ public class King extends Piece {
         //             for (int y = oppoKingCoord.y - 1; y < oppoKingCoord.y + 1; y++) {
         //                 if (x < 0 || x > 7 || y < 0 || y > 7) continue;
         //                 if (x == oppoKingCoord.x && y == oppoKingCoord.y) continue;
-        //                 illegaCoords.add(new Coord(x, y));
+        //                 illegalCoords.add(new Coord(x, y));
         //             }
         //         }
         //         continue;
@@ -65,14 +65,14 @@ public class King extends Piece {
         //     // getLegalMoves() result
         //     for (Coord m: e.getValue().getLegalMoves(currentBoard, e.getKey())) {
         //         if (ret.contains(m)) {
-        //             illegaCoords.add(m);
+        //             illegalCoords.add(m);
         //         }
         //     }
         // }
 
         for (Coord c: ret) {
             if (Board.isUnderAttack(currentBoard, c, this.isBlack())) {
-                illegaCoords.add(c);
+                illegalCoords.add(c);
             }
         }
 
@@ -85,12 +85,12 @@ public class King extends Piece {
         }
         for (Coord c: friends.keySet()) {
             if (ret.contains(c)) {
-                illegaCoords.add(c);
+                illegalCoords.add(c);
             }
 
         }
 
-        ret.removeAll(illegaCoords);
+        ret.removeAll(illegalCoords);
         return ret;
     }
 
