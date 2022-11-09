@@ -40,10 +40,33 @@ public class Pawn extends Piece {
         }
         else {
             if (currentCoord.y < 6) {
-                canTwoStepForward = true;
+                canOneStepForward = true;
             }
             if (currentCoord.y == 1) {
-                canOneStepForward = true;
+                canTwoStepForward = true;
+            }
+        }
+        
+        for (Coord c: friends.keySet()) {
+            if (c.equals(oneStepForward)) {
+                canOneStepForward = false;
+                canTwoStepForward = false;
+            }
+        }
+        for (Coord c: enemies.keySet()) {
+            if (c.equals(oneStepForward)) {
+                canOneStepForward = false;
+                canTwoStepForward = false;
+            }
+        }
+        for (Coord c: friends.keySet()) {
+            if (c.equals(twoStepForward)) {
+                canTwoStepForward = false;
+            }
+        }
+        for (Coord c: enemies.keySet()) {
+            if (c.equals(twoStepForward)) {
+                canTwoStepForward = false;
             }
         }
 
@@ -52,29 +75,6 @@ public class Pawn extends Piece {
         }
         if (canTwoStepForward) {
             twoStepForward = new Coord(currentCoord.x, currentCoord.y + (this.isBlack()?-2:2));
-        }
-
-        for (Coord c: friends.keySet()) {
-            if (c.equals(oneStepForward)) {
-                canOneStepForward = false;
-                canTwoStepForward = false;
-            }
-        }
-        for (Coord c: enemies.keySet()) {
-            if (c.equals(oneStepForward)) {
-                canOneStepForward = false;
-                canTwoStepForward = false;
-            }
-        }
-        for (Coord c: friends.keySet()) {
-            if (c.equals(twoStepForward)) {
-                canTwoStepForward = false;
-            }
-        }
-        for (Coord c: enemies.keySet()) {
-            if (c.equals(twoStepForward)) {
-                canTwoStepForward = false;
-            }
         }
 
         if (canOneStepForward) ret.add(oneStepForward);
