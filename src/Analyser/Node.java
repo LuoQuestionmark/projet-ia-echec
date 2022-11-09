@@ -52,7 +52,7 @@ public class Node {
         ArrayList<String> lines = new ArrayList<>();
         lines.add("graph g {");
         lines.add("graph [rankdir = \"LR\"];");
-        lines.add(toString());
+        lines.add(dumpString());
         lines.add("}");
 
         Path file = Paths.get(filepath);
@@ -63,13 +63,12 @@ public class Node {
         }
     }
 
-    @Override
-    public String toString() {
+    public String dumpString() {
         String str = String.format("\"node%d\" [\nlabel = \"<f0> %d | <f1> %f\" shape = \"record\"];\n", thisIndex, thisIndex, this.score);
         for (Map.Entry<Move, Node> e: this.moves.entrySet()) {
             Node n = e.getValue();
             str += String.format("\"node%d\"-> \"node%d\" [label = \"%s\"];\n", this.thisIndex, n.thisIndex, e.getKey());
-            str += n.toString();
+            str += n.dumpString();
         }
         return str;
     }
