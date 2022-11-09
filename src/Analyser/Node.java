@@ -50,7 +50,7 @@ public class Node {
 
     public void dumpGraph(String filepath) {
         ArrayList<String> lines = new ArrayList<>();
-        lines.add("digraph g {");
+        lines.add("graph g {");
         lines.add("graph [rankdir = \"LR\"];");
         lines.add(toString());
         lines.add("}");
@@ -68,7 +68,7 @@ public class Node {
         String str = String.format("\"node%d\" [\nlabel = \"<f0> %d | <f1> %f\" shape = \"record\"];\n", thisIndex, thisIndex, this.score);
         for (Map.Entry<Move, Node> e: this.moves.entrySet()) {
             Node n = e.getValue();
-            str += String.format("\"node%d\":f0 -> \"node%d\":f0 [label = \"%s\"];\n", this.thisIndex, n.thisIndex, e.getKey());
+            str += String.format("\"node%d\"-> \"node%d\" [label = \"%s\"];\n", this.thisIndex, n.thisIndex, e.getKey());
             str += n.toString();
         }
         return str;
