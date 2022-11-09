@@ -15,20 +15,21 @@ public class Board implements Cloneable {
     private TreeMap<Coord, Piece> board = new TreeMap<>();
 
     private boolean isBlackMove = false;
+    
     public Coord enpassant = null; // null means no "enpassant"
-                                    // otherwise is the last coord of the "enpassant"
-
+    // otherwise is the last coord of the "enpassant"
+    
     // these variables are used to track the "castling"
     // zero for black, one for white
     private boolean[] isKingMoved = {false, false};
     private boolean[] isLeftRockMoved = {false, false};
     private boolean[] isRightRockMoved = {false, false};
-
+    
     public Board() {
         for (PieceType pt: PieceType.values()) {
             availablePieces.put(pt, new ArrayList<Piece>());
         }
-
+        
         boolean bVals[] = {true, false}; // black, white
         for (boolean isBlack: bVals) {
             availablePieces.get(PieceType.Bishop).add(new Bishop(isBlack));
@@ -40,8 +41,12 @@ public class Board implements Cloneable {
         }
     }
 
+    public boolean isBlackMove() {
+        return isBlackMove;
+    }
+    
     public void addPiece(Coord c, Piece p) throws IllegalArgumentException {
-        // throw illegalArgumentException is opertaion cannot be done
+        // throw illegalArgumentException is operation cannot be done
         if ((board.containsKey(c))) {
             throw new IllegalArgumentException("the Coord " + c + " is not valid");
         }
@@ -146,7 +151,7 @@ public class Board implements Cloneable {
 
     }
 
-    public ArrayList<Move> getAvaiableMoves() {
+    public ArrayList<Move> getAvailableMoves() {
         ArrayList<Move> ret = new ArrayList<>();
         TreeMap<Coord, Piece> pieces;
 
@@ -189,7 +194,7 @@ public class Board implements Cloneable {
             }
         }
 
-        // spcial case: castling
+        // special case: castling
         ret.addAll(getMoveCastlings());
 
         return ret;
@@ -209,7 +214,7 @@ public class Board implements Cloneable {
         }
         if (this.board.get(m.coordDst) != null) {
             if (p.isBlack() == this.board.get(m.coordDst).isBlack()) {
-                throw new IllegalArgumentException("illegal move: cannot move to a place which is ouccupied by a piece of same color");
+                throw new IllegalArgumentException("illegal move: cannot move to a place which is occupied by a piece of same color");
             }
         }
 
@@ -399,7 +404,7 @@ public class Board implements Cloneable {
                     break;
             
                 default:
-                    throw new IllegalArgumentException("Error when analysing the board: un recognized piece shortname: " + p.getShortName());
+                    throw new IllegalArgumentException("Error when analyzing the board: un recognized piece shortname: " + p.getShortName());
             }
 
             score += positivity * pieceScore;
@@ -407,7 +412,7 @@ public class Board implements Cloneable {
 
         if (!(isBlackKingAlive || isWhiteKingAlive)) {
             // illegal situation
-            // still wondering if it ould happen
+            // still wondering if it could happen
             return Double.NaN;
         }
         else if (!(isBlackKingAlive)) {

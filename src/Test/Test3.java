@@ -17,7 +17,7 @@ public class Test3 {
 
         double evalVal;
         while(true) {
-            availableMoves = bs.getAvaiableMoves();
+            availableMoves = bs.getAvailableMoves();
             if (availableMoves.size() == 0) {
                 System.out.println(bs);
                 break;

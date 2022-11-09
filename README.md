@@ -56,7 +56,7 @@ So I have come to a new implementation of the chess board:
 
 - the board itself contains an array of `Piece`;
 - each reference `null` if the case is empty, or a certain `Piece` object if it isn't;
-- all the `Piece` are created once in a general way, and it will no longer contain the information of its coordinnation.
+- all the `Piece` are created once in a general way, and it will no longer contain the information of its coordination.
 
 ## note: 28 oct
 
@@ -72,9 +72,9 @@ Next step:
 
 Now the `move` `en passant` and `castling` are done. Still need the `evaluate` to finish this part.
 
-### evalutation function
+### evaluation function
 
-The evaluation function should enable the `Board` to know if one of the players is more or less avanced compare to the other. So a function like the following:
+The evaluation function should enable the `Board` to know if one of the players is more or less advanced compare to the other. So a function like the following:
 
 ```java
 double evaluate(); // return number from -inf to inf
@@ -109,7 +109,7 @@ Since the part with rebuilding the scenario is done, I now search and add the [s
 
 [^1]: I found it [here](https://www.shredderchess.com/download.html).
 
-According to the document, 
+According to the document,
 
 > all communication is done via standard input and output with text commands
 
@@ -160,3 +160,48 @@ quit
 ```
 
 Considering it's a long program to be done, I will do it later.
+
+## note: 8 nov
+
+Time to start the AI. The thing is how to design the structure. Specially knowing that it should do it on multithread with instantaneous respond.
+
+The main class should be something like this:
+
+```java
+class ChessAnalyser implements Runnable (Board b);
+```
+
+and a `run` function which enable the analyse. Once it's running, there should be a `getNext` function which give the best next move.
+
+Because the function should always give a "not so bad" answer, search should be done in a more "flat" way. Maybe a `Queue` that do the analyse FIFO. For example, we check the move(s) in the following order:
+
+```pseudocode
+m1
+m2
+m3
+...
+m1-m2
+m1-m3
+m1-m4
+...
+// m2 can be ignored if minmax is done properly
+...
+m3-m1
+...
+```
+
+for the actual tree structure, I can do it like this:
+
+```java
+class Node {
+    Board currentBoard;
+    TreeMap<Move, Node> moves;
+    float score, min, max;
+    void updateMin(float val);
+    void updateMax(float val);
+}
+```
+
+### wrapping
+
+After that I still need an interface to actually do the work of communication. Which will also create the instance of `ChessAnalyser` for each new move. In the other word, each `ChessAnalyser` will only calculate one legal move.

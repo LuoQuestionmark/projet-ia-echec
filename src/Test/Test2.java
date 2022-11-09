@@ -11,13 +11,13 @@ public class Test2 {
         b2.addPiece(new Coord(1, 3), new Pawn(true));
         System.out.println("print the board (test enpassant):");
         System.out.println(b2);
-        Move m = b2.getAvaiableMoves().get(1);
+        Move m = b2.getAvailableMoves().get(1);
         System.out.println("move white pawn: " + m);
         Board b3 = b2.move(m);
         System.out.println(b3);
         System.out.println("now see if enpassant is available");
-        System.out.println(b3.getAvaiableMoves());
-        for (Move mi: b3.getAvaiableMoves()) {
+        System.out.println(b3.getAvailableMoves());
+        for (Move mi: b3.getAvailableMoves()) {
             if (mi instanceof MoveEnpassnt) {
                 b3 = b3.move(mi);
             }
