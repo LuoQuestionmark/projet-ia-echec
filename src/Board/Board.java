@@ -12,7 +12,7 @@ import mUtil.*;
 
 public class Board implements Cloneable {
 
-    private final double heuristicConst = 0.7;
+    private final double heuristicConst = 0.1;
 
     private HashMap<PieceType, ArrayList<Piece>> availablePieces = new HashMap<>();
     private TreeMap<Coord, Piece> board = new TreeMap<>();
@@ -210,7 +210,7 @@ public class Board implements Cloneable {
 
         // check exceptions
         if ((p = this.board.get(m.coordSrc)) == null) {
-            throw new IllegalArgumentException("illegal move: no piece can be found at the position \"src\"");
+            throw new IllegalArgumentException("illegal move: no piece can be found at the position \"" + m.coordSrc +"\"");
         }
         if (p.isBlack() ^ this.isBlackMove) {
             throw new IllegalArgumentException("illegal move: not the right color/turn");
@@ -234,6 +234,25 @@ public class Board implements Cloneable {
             Board ret = this.clone();  // copy the object
             ret.isBlackMove = !(ret.isBlackMove); // inverse the turn
             ret.enpassant = enpassantCoord;
+
+            if (m.coordSrc.equals(new Coord(0, 0))) {
+                ret.isLeftRockMoved[1] = true;
+            }
+            else if (m.coordSrc.equals(new Coord(0, 7))) {
+                ret.isRightRockMoved[1] = true;
+            }
+            else if (m.coordSrc.equals(new Coord(0, 7))) {
+                ret.isLeftRockMoved[0] = true;
+            }
+            else if (m.coordSrc.equals(new Coord(7, 7))) {
+                ret.isRightRockMoved[0] = true;
+            }
+            else if (m.coordSrc.equals(new Coord(0, 5))) {
+                ret.isKingMoved[1] = true;
+            }
+            else if (m.coordSrc.equals(new Coord(7, 5))) {
+                ret.isKingMoved[0] = true;
+            }
 
             if (m instanceof MoveEnpassnt) {
                 ret.board.remove(m.coordSrc);
@@ -434,10 +453,10 @@ public class Board implements Cloneable {
 
         // now do the job
         for (Coord c: this.getBlackPieces().keySet()) {
-            ret -= (Math.abs(c.x - 3.5) + Math.abs(c.y - 3.5)) * this.heuristicConst;
+            ret += Math.abs(c.y - 2) * this.heuristicConst;
         }
         for (Coord c: this.getWhitePieces().keySet()) {
-            ret += (Math.abs(c.x - 3.5) + Math.abs(c.y - 3.5)) * this.heuristicConst;
+            ret -= Math.abs(c.y - 5) * this.heuristicConst;
         }
 
         return ret;
@@ -477,6 +496,10 @@ public class Board implements Cloneable {
         ret.availablePieces = this.availablePieces;
         ret.board = new TreeMap<Coord, Piece>(this.board);
         ret.isBlackMove = this.isBlackMove;
+
+        ret.isKingMoved = this.isKingMoved;
+        ret.isLeftRockMoved = this.isLeftRockMoved;
+        ret.isRightRockMoved = this.isRightRockMoved;
 
         return ret;
     }

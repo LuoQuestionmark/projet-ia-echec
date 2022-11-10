@@ -20,15 +20,21 @@ public class Test5 {
         try {
             do {
                 ChessAnalyser ca = new ChessAnalyser(b);
+                ca.setDepthLimit(3);
                 Thread t = new Thread(ca);
                 t.run();
-                Thread.sleep(2000);
+                Thread.sleep(8000);
                 Move m = ca.getBestMove();
                 System.out.println(m);
                 b = b.move(m);
+                System.out.println(b);
                 Move oppoMove;
                 while (true) {
                     String s = br.readLine();
+                    if (s.equals("p")) {
+                        ca.getRoot().dumpGraph("./output.dot");
+                        continue;
+                    }
                     String[] tokens = s.split("[ ]+" );
                     if (tokens.length != 4) continue;
                     int[] vals = new int[4];

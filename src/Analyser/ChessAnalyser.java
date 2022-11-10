@@ -14,7 +14,8 @@ public class ChessAnalyser implements Runnable {
     private volatile boolean isFinish;
     private boolean isBlackSide;
     
-    private final int depthLimit = 3; 
+    public int depthLimit = 2; 
+    
     private final boolean isHeuristic = true;
     
     public ChessAnalyser(Board b) {
@@ -22,6 +23,10 @@ public class ChessAnalyser implements Runnable {
         this.isFinish = false;
         this.isBlackSide = b.isBlackMove();
         this.root = new Node(board);
+    }
+
+    public void setDepthLimit(int depthLimit) {
+        this.depthLimit = depthLimit;
     }
     
     public Node getRoot() {
@@ -59,7 +64,7 @@ public class ChessAnalyser implements Runnable {
         return ret;
     }
 
-    synchronized public void explore(int depth) {
+    synchronized public double explore(int depth) {
         // the entry point of function which do the search,
         // which will call a different version of overload
         // result should be stored in the best move of root,
@@ -68,49 +73,53 @@ public class ChessAnalyser implements Runnable {
         // the value within the node, to prevent future
         // error, this is a 'synchronized' here.
         root.calScore(isHeuristic);
-        this.explore(depth, root);
+        return this.explore(depth, root);
     }
 
-    synchronized public void explore(int depth, Node father) {
+    synchronized public double explore(int depth, Node father) {
         // the actual recursive body of function "explore"
-        if (this.isFinish) return;
+        if (this.isFinish || depth == 0) {
+            return father.calScore(true);
+        }
 
-        Board b = father.currentBoard;
+        double val;
+        Board nb;
+        Node nn;
+        if (!(father.currentBoard.isBlackMove())) {
+            val = Double.NEGATIVE_INFINITY;
+            for (Move m: father.currentBoard.getAvailableMoves()) {
+                nb = father.currentBoard.move(m);
+                nn = new Node(father, nb);
+                father.addNode(m, nn);
 
-        for (Move m: b.getAvailableMoves()) {
-            // simulate each possibility
-            Board nb = b.move(m);
-            Node nn = new Node(father, nb);
-
-            double score = nn.calScore(isHeuristic);
-            father.addNode(m, nn);
-
-            // alpha-beta cut
-            if (isBlackSide && father.getMin() < score) {
-                return;
-            }
-            if (!(isBlackSide) && father.getMax() > score) {
-                return;
-            }
-
-            // if is not cut then do the recursion
-            if (depth > 0) {
-                explore(depth - 1, nn);
-            }
-
-            // update the value of alpha and beta, this can only be done when the children are visited
-            if (b.isBlackMove()) {
-                father.updateMax(nn.getScore());
-            }
-            else {
-                father.updateMin(nn.getScore());
+                double childVal = explore(depth - 1, nn);
+                val = Math.max(val, childVal);
+                if (val > father.getMin()) break;
+                father.updateMax(val);
             }
         }
+        else {
+            val = Double.POSITIVE_INFINITY;
+            for (Move m: father.currentBoard.getAvailableMoves()) {
+                nb = father.currentBoard.move(m);
+                nn = new Node(father, nb);
+                father.addNode(m, nn);
+
+                double childVal = explore(depth - 1, nn);
+                val = Math.min(val, childVal);
+                if (val < father.getMax()) break;
+                father.updateMin(val);
+            }
+        }
+        
+        father.setScore(val);
+
+        return val;
     }    
 
     @Override
     public void run() {
-        int depth = 2;
+        int depth = 1;
         while (!isFinish && depth <= depthLimit) {
             explore(depth);
             depth += 1;
