@@ -3,6 +3,7 @@
  */
 package Test;
 
+import Analyser.*;
 import Board.Board;
 import Move.Move;
 import mUtil.Coord;
@@ -10,7 +11,6 @@ import mUtil.Coord;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
-import Analyser.*;
 
 public class Test5 {
     public static void main(String[] args) {

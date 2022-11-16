@@ -210,4 +210,35 @@ After that I still need an interface to actually do the work of communication. W
 
 I tested the code that I wrote yesterday. While it seems to be working, it doesn't give a satisfaite result: there is 0 everywhere, due to the lack of a *heuristic function*. In the other word, since there is not much happening at the start of the game - let's say, for the first four moves there is rarely any piece is taken - then their score are all zeros. That's about $10^4$ zeros floating around, before the algorithme can merely do anything useful.
 
-That's why I think it's necessary to add a function $h$, to calculate a hidden score showing the advantage/disadvantage of one player. Besides, I am not sure if the $\alpha - \beta$ works as I want. More tests are needing.
+That's why I think it's necessary to add a function $h$, to calculate a hidden score showing the advantage/disadvantage of one player. Besides, I am not sure if the $\alpha - \beta$ works as I want. More tests are needed.
+
+## note: 15 nov
+
+The program works more or less, with some fringes, specially with a limited time of calculation. However the time is not enough for further development, so now I start the interface.
+
+The I/O are done with stdin/stdout. Seems that the pipe will be created by the chess gui. So I won't bother it for now.
+
+Then, the exact I/O sequence is the following (presuming it goes nicely):
+
+```txt
+-> uci
+<- id name xxx
+<- id author xxx
+<- uciok
+
+-> isready
+<- readyok
+
+-> ucinewgame (?)
+
+-> position startpos
+
+-> go infinite [searchmoves|ponder]
+-> stop
+<- bestmove
+
+-> ponder (?)
+
+-> stop
+
+```

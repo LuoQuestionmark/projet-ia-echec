@@ -5,8 +5,8 @@ package Move;
 
 import mUtil.Coord;
 
-public class MoveEnpassnt extends Move {
-    public MoveEnpassnt(Coord src, Coord dst) {
+public class MoveEnpassant extends Move {
+    public MoveEnpassant(Coord src, Coord dst) {
         super(src, dst);
     }
 

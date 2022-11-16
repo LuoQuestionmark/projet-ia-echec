@@ -36,4 +36,9 @@ public class Move implements Comparable<Move> {
     public String toString() {
         return coordSrc + "->" + coordDst;
     }
+
+    public String getNotationString() {
+        return coordSrc.getNotationString() + coordDst.getNotationString();
+    }
+
 }

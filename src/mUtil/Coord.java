@@ -17,6 +17,14 @@ public class Coord implements Comparable<Coord> {
         return String.format("(%d, %d)", x, y);
     }
 
+    public String getNotationString() {
+        // this return the standard notation, for example e2
+        String str = "";
+        str += (char)(x + 97);
+        str += String.valueOf(y + 1);
+        return str;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof Coord)) return false;

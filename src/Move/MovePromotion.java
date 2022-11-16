@@ -46,4 +46,28 @@ public class MovePromotion extends Move {
         }
         return super.toString() + "promotion: " + pt;
     }
+
+    @Override
+    public String getNotationString() {
+        String pt;
+        switch (promotion) {
+            case Bishop:
+                pt = "b";
+                break;
+            case Knight:
+                pt = "n";
+                break;
+            case Queen:
+                pt = "q";
+                break;
+            case Rock:
+                pt = "r";
+                break;
+            case King:
+            case Pawn:
+            default:
+                throw new IllegalAccessError("this branch shouldn't be able to accessed! something wrong with the piece type, check if the object is not initialized correctly");
+        }
+        return super.getNotationString() + pt;
+    }
 }
