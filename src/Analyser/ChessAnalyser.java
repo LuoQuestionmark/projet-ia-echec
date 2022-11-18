@@ -12,7 +12,7 @@ public class ChessAnalyser implements Runnable {
     private volatile Node oldRoot;
     
     private volatile boolean isFinish;
-    private boolean isBlackSide;
+    private boolean isBlackSide=false;
     
     public int depthLimit = 2; 
     
@@ -58,6 +58,8 @@ public class ChessAnalyser implements Runnable {
             if (!(isBlackSide) && tmp < score) {
                 tmp = score;
                 ret = e.getKey();
+                // System.out.print(e.getKey());
+                // System.out.println(e.getValue().getScore());
             }
         }
         
@@ -76,43 +78,49 @@ public class ChessAnalyser implements Runnable {
         return this.explore(depth, root);
     }
 
-    synchronized public double explore(int depth, Node father) {
+    synchronized public double explore(int depth, Node current) {
         // the actual recursive body of function "explore"
         if (this.isFinish || depth == 0) {
-            return father.calScore(true);
+            return current.calScore(true);
         }
 
         double val;
-        Board nb;
-        Node nn;
-        if (!(father.currentBoard.isBlackMove())) {
+        Board newBoard;
+        Node child;
+        if (!(current.currentBoard.isBlackMove())) {
+            // white
             val = Double.NEGATIVE_INFINITY;
-            for (Move m: father.currentBoard.getAvailableMoves()) {
-                nb = father.currentBoard.move(m);
-                nn = new Node(father, nb);
-                father.addNode(m, nn);
+            for (Move m: current.currentBoard.getAvailableMoves()) {
+                newBoard = current.currentBoard.move(m);
+                child = new Node(current, newBoard);
+                current.addNode(m, child);
 
-                double childVal = explore(depth - 1, nn);
+                double childVal = explore(depth - 1, child);
                 val = Math.max(val, childVal);
-                if (val > father.getMin()) break;
-                father.updateMax(val);
+                if (val > current.getBeta()) return val;
+            }
+            if (current.father != null) {
+                current.father.updateBeta(val);
             }
         }
         else {
+            // black
             val = Double.POSITIVE_INFINITY;
-            for (Move m: father.currentBoard.getAvailableMoves()) {
-                nb = father.currentBoard.move(m);
-                nn = new Node(father, nb);
-                father.addNode(m, nn);
+            for (Move m: current.currentBoard.getAvailableMoves()) {
+                newBoard = current.currentBoard.move(m);
+                child = new Node(current, newBoard);
+                current.addNode(m, child);
 
-                double childVal = explore(depth - 1, nn);
+                double childVal = explore(depth - 1, child);
                 val = Math.min(val, childVal);
-                if (val < father.getMax()) break;
-                father.updateMin(val);
+                if (val < current.getAlpha()) return val;
+            }
+            if (current.father != null) {
+                current.father.updateAlpha(val);
             }
         }
         
-        father.setScore(val);
+        current.setScore(val);
 
         return val;
     }    

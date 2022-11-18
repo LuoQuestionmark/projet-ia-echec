@@ -16,16 +16,17 @@ public class Node {
     static int index = 0;
     private int thisIndex;
 
+    public Node father = null;
     public Board currentBoard;
     public TreeMap<Move, Node> moves = new TreeMap<>();
-    private double score, min, max;
+    private double score, beta, alpha;
     
-    public double getMax() {
-        return max;
+    public double getAlpha() {
+        return alpha;
     }
 
-    public double getMin() {
-        return min;
+    public double getBeta() {
+        return beta;
     }
 
     public double getScore() {
@@ -44,26 +45,26 @@ public class Node {
 
     public Node(Board b) {
         currentBoard = b;
-        min = Double.POSITIVE_INFINITY;
-        max = Double.NEGATIVE_INFINITY;
+        beta = Double.POSITIVE_INFINITY;
+        alpha = Double.NEGATIVE_INFINITY;
         thisIndex = index++;
     }
 
     public Node(Node father, Board b) {
         currentBoard = b;
-        min = father.getMin();
-        max = father.getMax();
+        beta = father.getBeta();
+        alpha = father.getAlpha();
         thisIndex = index++;
     }
 
-    public void updateMin(double val) {
-        this.min = Math.min(min, val);
-        this.score = Math.min(this.min, this.score);
+    public void updateBeta(double val) {
+        this.beta = Math.min(beta, val);
+        // this.score = Math.min(this.beta, this.score);
     }
     
-    public void updateMax(double val) {
-        this.max = Math.max(max, val);
-        this.score = Math.max(this.max, this.score);
+    public void updateAlpha(double val) {
+        this.alpha = Math.max(alpha, val);
+        // this.score = Math.max(this.alpha, this.score);
     }
 
     public void addNode(Move m, Node n) {
@@ -86,7 +87,7 @@ public class Node {
     }
 
     public String dumpString(String from) {
-        String str = String.format("\"node%d\" [\nlabel = \"<f0> " + from + " | <f1> %.2f | <f3> %.2f | <f4> %.2f\" shape = \"record\"];\n", thisIndex, this.score, this.min, this.max);
+        String str = String.format("\"node%d\" [\nlabel = \"<f0> " + from + " | <f1> %.2f | <f3> %.2f | <f4> %.2f\" shape = \"record\"];\n", thisIndex, this.score, this.beta, this.alpha);
         for (Map.Entry<Move, Node> e: this.moves.entrySet()) {
             Node n = e.getValue();
             str += String.format("\"node%d\"-> \"node%d\" [label = \"%s\"];\n", this.thisIndex, n.thisIndex, e.getKey());

@@ -21,11 +21,12 @@ public class Test5 {
             do {
                 ChessAnalyser ca = new ChessAnalyser(b);
                 ca.setDepthLimit(3);
-                Thread t = new Thread(ca);
-                t.run();
-                Thread.sleep(8000);
+                // Thread t = new Thread(ca);
+                // t.run();
+                // Thread.sleep(5000);
+                ca.explore(3);
                 Move m = ca.getBestMove();
-                System.out.println(m);
+                System.out.println(m.getNotationString());
                 b = b.move(m);
                 System.out.println(b);
                 Move oppoMove;

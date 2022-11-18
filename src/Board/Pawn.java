@@ -49,7 +49,7 @@ public class Pawn extends Piece {
         if (currentCoord.y + (this.isBlack()?-1:1) >= 0 && currentCoord.y + (this.isBlack()?-1:1) < 8) {
             oneStepForward = new Coord(currentCoord.x, currentCoord.y + (this.isBlack()?-1:1));
         }
-        if (currentCoord.y + (this.isBlack()?-2:2) >= 0 && currentCoord.y + (this.isBlack()?-1:1) < 8) {
+        if (currentCoord.y + (this.isBlack()?-2:2) >= 0 && currentCoord.y + (this.isBlack()?-2:2) < 8) {
             twoStepForward = new Coord(currentCoord.x, currentCoord.y + (this.isBlack()?-2:2));
         }
         
