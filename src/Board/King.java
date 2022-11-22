@@ -40,41 +40,8 @@ public class King extends Piece {
         // step 2: remove
         // TreeMap<Coord,Piece> enemies;
         TreeSet<Coord> illegalCoords = new TreeSet<Coord>();
-        // if (this.isBlack()) {
-        //     enemies = currentBoard.getWhitePieces();
-        // }
-        // else {
-        //     enemies = currentBoard.getBlackPieces();
-        // }
-
-        // for (Map.Entry<Coord,Piece> e: enemies.entrySet()) {
-        //     if (e.getValue().getShortName().equals("K")) {
-        //         // if it's opponent king, then the calculus should be different
-        //         // to prevent infinite loop
-        //         // so we calculate manually the coords around the enemy king
-        //         Coord oppoKingCoord = e.getKey();
-        //         for (int x = oppoKingCoord.x - 1; x < oppoKingCoord.x + 1; x++) {
-        //             for (int y = oppoKingCoord.y - 1; y < oppoKingCoord.y + 1; y++) {
-        //                 if (x < 0 || x > 7 || y < 0 || y > 7) continue;
-        //                 if (x == oppoKingCoord.x && y == oppoKingCoord.y) continue;
-        //                 illegalCoords.add(new Coord(x, y));
-        //             }
-        //         }
-        //         continue;
-        //     }
-        //     // getLegalMoves() result
-        //     for (Coord m: e.getValue().getLegalMoves(currentBoard, e.getKey())) {
-        //         if (ret.contains(m)) {
-        //             illegalCoords.add(m);
-        //         }
         //     }
         // }
-
-        for (Coord c: ret) {
-            if (Board.isUnderAttack(currentBoard, c, this.isBlack())) {
-                illegalCoords.add(c);
-            }
-        }
 
         TreeMap<Coord,Piece> friends;
         if (this.isBlack()) {
