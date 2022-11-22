@@ -136,4 +136,8 @@ public class ChessAnalyser implements Runnable {
             this.oldRoot = this.root;
         }
     }
+
+    public void finish() {
+        this.isFinish = true;
+    }
 }
