@@ -14,7 +14,7 @@ public class ChessAnalyser implements Runnable {
     private volatile boolean isFinish;
     private boolean isBlackSide=false;
     
-    public int depthLimit = 2; 
+    public int depthLimit = 3; 
     
     private final boolean isHeuristic = true;
     
