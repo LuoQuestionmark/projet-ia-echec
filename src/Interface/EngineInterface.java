@@ -88,7 +88,13 @@ public class EngineInterface {
                         logFileWriter.write(bestmove);
                         break;
                     case "position":
-                        chessBoard = chessBoard.move(tokens[1]);
+                        if (tokens[1].equals("startpos")) {
+                            chessBoard.newGame();
+                            continue;
+                        }
+                        else if (tokens[1].equals("moves")) {
+                            chessBoard = chessBoard.move(tokens[2]);
+                        }
                         break;
                     case "quit":
                         logFileWriter.write("here is EOF\n");

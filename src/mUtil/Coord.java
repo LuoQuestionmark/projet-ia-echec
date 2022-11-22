@@ -4,10 +4,10 @@ public class Coord implements Comparable<Coord> {
     public int x, y;
     public Coord(int x, int y) throws IllegalArgumentException {
         if (x < 0 || x > 7) {
-            throw new IllegalArgumentException("illegal value of x");
+            throw new IllegalArgumentException("illegal value of x" + x);
         }
         if (y < 0 || y > 7) {
-            throw new IllegalArgumentException("illegal value of y");
+            throw new IllegalArgumentException("illegal value of y" + y);
         }
         this.x = x;
         this.y = y;

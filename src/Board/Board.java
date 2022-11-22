@@ -212,7 +212,7 @@ public class Board implements Cloneable {
         if ((p = this.board.get(m.coordSrc)) == null) {
             throw new IllegalArgumentException("illegal move: no piece can be found at the position \"" + m.coordSrc +"\"");
         }
-        if (p.isBlack() ^ this.isBlackMove) {
+        if (p.isBlack() != this.isBlackMove) {
             throw new IllegalArgumentException("illegal move: not the right color/turn");
         }
         if (this.board.get(m.coordDst) != null) {
@@ -225,7 +225,9 @@ public class Board implements Cloneable {
         if (p.getShortName().equals("P")) {
             if (m.coordDst.y == 3 && !(p.isBlack())
             || (m.coordDst.y == 4 &&   p.isBlack())) {
-                enpassantCoord = m.coordDst;
+                if (Math.abs(m.coordDst.y - m.coordSrc.y) == 2) {
+                    enpassantCoord = m.coordDst;
+                }
             }
         }        
 
@@ -256,7 +258,7 @@ public class Board implements Cloneable {
 
             if (m instanceof MoveEnpassant) {
                 ret.board.remove(m.coordSrc);
-                ret.board.remove(this.enpassant);
+                ret.board.remove(new Coord(m.coordDst.x, m.coordSrc.y));
                 ret.board.put(m.coordDst, p);
             }
             else if (m instanceof MovePromotion) {
@@ -299,41 +301,70 @@ public class Board implements Cloneable {
         c = longAlgebraicString.charAt(2);
         d = longAlgebraicString.charAt(3);
 
-        Coord src = new Coord(a - 97, b - 1);
-        Coord dst = new Coord(c - 97, d - 1);
+        Coord src = new Coord(a - 97, b - 49);
+        Coord dst = new Coord(c - 97, d - 49);
 
         if (longAlgebraicString.length() == 4) {
             // normal, castling, enpassant
             int rowIndex = isBlackMove()?7:0;
             if (!(isKingMoved[isBlackMove()?0:1]) && src.equals(new Coord(4, rowIndex))) {
                 // castling
-                Piece king;
-                Piece rock;
+                // Piece king;
+                // Piece rock;
                 if (dst.equals(new Coord(2, rowIndex))) {
                     // left (long)
-                    king = board.remove(new Coord(4, rowIndex));
-                    board.put(dst, king);
-                    rock = board.remove(new Coord(0, rowIndex));
-                    board.put(new Coord(3, rowIndex), rock);
+                    // king = board.remove(new Coord(4, rowIndex));
+                    // board.put(dst, king);
+                    // rock = board.remove(new Coord(0, rowIndex));
+                    // board.put(new Coord(3, rowIndex), rock);
+                    return this.move(new MoveCastling(src, dst, new Coord(0, rowIndex), new Coord(3, rowIndex)));
                 }
                 else if (dst.equals(new Coord(6, rowIndex))) {
-                    // right (short)
-                    king = board.remove(new Coord(4, rowIndex));
-                    board.put(dst, king);
-                    rock = board.remove(new Coord(0, rowIndex));
-                    board.put(new Coord(5, rowIndex), rock);
+                    // // right (short)
+                    // king = board.remove(new Coord(4, rowIndex));
+                    // board.put(dst, king);
+                    // rock = board.remove(new Coord(7, rowIndex));
+                    // board.put(new Coord(5, rowIndex), rock);
+                    return this.move(new MoveCastling(src, dst, new Coord(7, rowIndex), new Coord(5, rowIndex)));
+                }
+                else {
+                    return this.move(new Move(src, dst));
+                    // throw new IllegalArgumentException("unable to parse string: " + longAlgebraicString);
                 }
             }
-            else if (board.get(src).getShortName().equals("P") && Math.abs(dst.x - src.x) == 1) {
+            else if (board.get(src).getShortName().equals("P") && Math.abs(dst.x - src.x) == 1 && board.keySet().contains(new Coord(dst.x, src.y)) && board.get(new Coord(dst.x, src.y)).getShortName().equals("P")) {
                 // enpassant
-                Piece pawnWalking, pawnTaken;
-                // TODO
+                // Piece pawnWalking, pawnTaken;
+                // pawnWalking = board.remove(src);
+                // pawnTaken   = board.remove(new Coord(dst.x, src.y));
+                // board.put(dst, pawnWalking);
+                return this.move(new MoveEnpassant(src, dst));
             }
-            return this.move(new Move(src, dst));
+            else {
+                return this.move(new Move(src, dst));
+            }
         }
         else {
             // promotion
-            return null;
+            char e = longAlgebraicString.charAt(4);
+            PieceType pt;
+            switch (e) {
+                case 'b':
+                    pt = PieceType.Bishop;
+                    break;
+                case 'q':
+                    pt = PieceType.Queen;
+                    break;
+                case 'r':
+                    pt = PieceType.Rock;
+                    break;
+                case 'n':
+                    pt = PieceType.Knight;
+                    break;
+                default:
+                    throw new IllegalArgumentException("unable to understand the input: " + longAlgebraicString);
+            }
+            return this.move(new MovePromotion(src, dst, pt));
         }
     }
 

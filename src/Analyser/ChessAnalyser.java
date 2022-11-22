@@ -62,6 +62,8 @@ public class ChessAnalyser implements Runnable {
                 // System.out.println(e.getValue().getScore());
             }
         }
+        this.root = null;
+        this.oldRoot = null;
         
         return ret;
     }
