@@ -7,7 +7,9 @@ import Board.Board;
 import Interface.InputNotifier;
 import Move.Move;
 
+
 public class OCAP {
+    final static int timeout = 2000;
     static Board board;
     static ChessAnalyser analyser;
     static InputNotifier notifier;
@@ -18,7 +20,7 @@ public class OCAP {
         startReadInput();
         while (true) {
             try {
-                Thread.sleep(1000);
+                Thread.sleep(timeout);
                 if (analyser != null) {
                     Move m = analyser.getBestMove();
                     printBestMove(m);
