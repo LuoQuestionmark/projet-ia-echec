@@ -15,7 +15,7 @@ public class Test6 {
 
         Move m = new Move(new Coord(6, 1), new Coord(6, 3));
         Move m2 = new Move(new Coord(7, 6), new Coord(7, 4));
-        Move m3 = new Move(new Coord(6, 3), new Coord(7, 4));
+        // Move m3 = new Move(new Coord(6, 3), new Coord(7, 4));
 
         b = b.move(m);
         System.out.println(b);
@@ -26,7 +26,7 @@ public class Test6 {
         // b.evaluate(true);
         ChessAnalyser ca = new ChessAnalyser(b);
         ca.explore(2);
-        var v = ca.getBestMove();
+        ca.getBestMove();
         ca.getRoot().dumpGraph("./output.dot");
     }
 }
