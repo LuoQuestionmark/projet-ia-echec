@@ -94,7 +94,7 @@ public class OCAP {
         if (board == null) return;
         analyser = new ChessAnalyser(board);
         Thread analyseThread = new Thread(analyser);
-        analyseThread.run();
+        analyseThread.start();
     }
 
     private static Move stopAnalyser() {
