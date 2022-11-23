@@ -9,7 +9,7 @@ import Move.Move;
 
 
 public class OCAP {
-    final static int timeout = 2000;
+    final static int timeout = 5000;
     static Board board;
     static ChessAnalyser analyser;
     static InputNotifier notifier;
