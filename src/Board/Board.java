@@ -236,23 +236,23 @@ public class Board implements Cloneable {
             Board ret = this.clone();  // copy the object
             ret.isBlackMove = !(ret.isBlackMove); // inverse the turn
             ret.enpassant = enpassantCoord;
-
+            // TODO: optimisation
             if (m.coordSrc.equals(new Coord(0, 0))) {
                 ret.isLeftRockMoved[1] = true;
             }
             else if (m.coordSrc.equals(new Coord(0, 7))) {
                 ret.isRightRockMoved[1] = true;
             }
-            else if (m.coordSrc.equals(new Coord(0, 7))) {
+            else if (m.coordSrc.equals(new Coord(7, 7))) {
                 ret.isLeftRockMoved[0] = true;
             }
             else if (m.coordSrc.equals(new Coord(7, 7))) {
                 ret.isRightRockMoved[0] = true;
             }
-            else if (m.coordSrc.equals(new Coord(0, 5))) {
+            else if (m.coordSrc.equals(new Coord(0, 4))) {
                 ret.isKingMoved[1] = true;
             }
-            else if (m.coordSrc.equals(new Coord(7, 5))) {
+            else if (m.coordSrc.equals(new Coord(7, 4))) {
                 ret.isKingMoved[0] = true;
             }
 
@@ -332,7 +332,13 @@ public class Board implements Cloneable {
                     // throw new IllegalArgumentException("unable to parse string: " + longAlgebraicString);
                 }
             }
-            else if (board.get(src).getShortName().equals("P") && Math.abs(dst.x - src.x) == 1 && board.keySet().contains(new Coord(dst.x, src.y)) && board.get(new Coord(dst.x, src.y)).getShortName().equals("P")) {
+            else if (board.get(src).getShortName().equals("P") 
+                 && Math.abs(dst.x - src.x) == 1
+                 && board.keySet().contains(new Coord(dst.x, src.y))
+                 && board.get(new Coord(dst.x, src.y)).getShortName().equals("P")
+                 && board.get(new Coord(dst.x, src.y)).isBlack() != board.get(src).isBlack()
+                 && (src.y == (board.get(src).isBlack()?3:4))
+                 ) {
                 // enpassant
                 // Piece pawnWalking, pawnTaken;
                 // pawnWalking = board.remove(src);
@@ -409,13 +415,15 @@ public class Board implements Cloneable {
         int row = isBlackMove?7:0;
         Piece p;
         if (isKingMoved[index]) return ret;
+        // TODO: check if necessary
         if ((p = board.get(new Coord(4, row))) == null) return ret;
         if (p.getShortName().equals("K") == false) return ret;
+        
 
         boolean canLeftCastling = true;
         boolean canRightCastling = true;
         if (!(isLeftRockMoved[index])) {
-            for (int i = 1; i < 4; i++) {
+            for (int i = 1; i <= 4; i++) {
                 if (board.containsKey(new Coord(i, row))) {
                     canLeftCastling = false;
                     break;
@@ -577,9 +585,9 @@ public class Board implements Cloneable {
         ret.board = new TreeMap<Coord, Piece>(this.board);
         ret.isBlackMove = this.isBlackMove;
 
-        ret.isKingMoved = this.isKingMoved;
-        ret.isLeftRockMoved = this.isLeftRockMoved;
-        ret.isRightRockMoved = this.isRightRockMoved;
+        ret.isKingMoved = this.isKingMoved.clone();
+        ret.isLeftRockMoved = this.isLeftRockMoved.clone();
+        ret.isRightRockMoved = this.isRightRockMoved.clone();
 
         return ret;
     }
